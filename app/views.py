@@ -30,10 +30,27 @@ class AllList(APIView):
         students = Student.objects.filter(classe=classe)
         for i in range(steps.count()-1, 0, -1):
             list_nodes = []
+            list_children = []
             """adicionando o primeiro da lista"""
             if len(activity_steps_list) == 0:
                 activity_object_children =Activity.objects.filter(step=steps[i])
-                activities_children = ActivitySerializer(activity_object_children, many=True)
+                
+                for activity_children in activity_object_children:
+                    list_students = []
+                    for student in students:
+                        if student in activity_children.student.all():
+                            list_students.append(
+                                StudentSerializer(student).data
+                                )
+                    list_children.append(
+                        {
+                        "pk":activity_children.pk,
+                        "name":activity_children.name,
+                        "steps":steps[i].name,
+                        "students": list_students
+                        }
+                    )
+                    
 
                 activity_object_parent = Activity.objects.filter(step=steps[i-1])
 
@@ -54,7 +71,7 @@ class AllList(APIView):
                             "name": activity_parent.name,
                             "steps":steps[i-1].name,
                             "students": students_list,
-                            "children": activities_children.data
+                            "children": list_children
                         }
                     )
 
