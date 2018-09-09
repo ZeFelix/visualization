@@ -2,11 +2,16 @@ from django.contrib import admin
 from app.models import *
 # Register your models here.
 
-class ActivityAdmin(admin.ModelAdmin):
-    list_filter = ('student', 'step')
-    list_display = ('name', 'get_students')
+class StudentInformationsInline(admin.TabularInline):  
+    model = StudentInformations 
+    extra = 1 
 
-admin.site.register(Step)
+class NodestAdmin(admin.ModelAdmin): 
+    inlines = (StudentInformationsInline,) 
+    list_display = ("name","get_activities","node_parent","depth")
+
 admin.site.register(Classes)
 admin.site.register(Student)
-admin.site.register(Activity,ActivityAdmin)
+admin.site.register(Activity)
+admin.site.register(Node,NodestAdmin)
+admin.site.register(Course)

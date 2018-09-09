@@ -1,19 +1,16 @@
 from app.models import *
 from rest_framework import serializers
 
-class StepSerializer(serializers.ModelSerializer):
+class StudentInformationsSerializer(serializers.ModelSerializer):
 
     class Meta:
-        model = Step
-        fields = ["pk","name"]
-
+        model = StudentInformations
+        fields = ["pk","notes","node","student"]
 
 class ClassesSerialzer(serializers.ModelSerializer):
-    step = StepSerializer(many=True)
-
     class Meta:
         model = Classes
-        fields = ['pk',"name","step"]
+        fields = ['pk',"name","course"]
 
 class ActivitySerializer(serializers.ModelSerializer):
 
@@ -25,4 +22,15 @@ class StudentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Student
-        fields = ["pk","name"]
+        fields = ["pk","name","classe"]
+    
+class NodeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Node
+        fields = ["pk","name","activity","students","node_parent","node_end"]
+    
+class CourseSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Course
+        fields = ["pk","name","course"]
+    

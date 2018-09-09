@@ -46,7 +46,7 @@ function update(source) {
     links = tree.links(nodes);
 
     // Normalize for fixed-depth.
-    nodes.forEach(function (d) { d.y = d.depth * 280; });
+    nodes.forEach(function (d) { d.y = d.depth * 140; });
 
     // Update the nodes…
     var node = svg.selectAll("g.node")
@@ -58,19 +58,21 @@ function update(source) {
         .attr("transform", function (d) { return "translate(" + source.y0 + "," + source.x0 + ")"; })
         .on("click", click)
         .on("mouseover", function (d) {
-            var info_students = "Não há estudantes"
-            if (d.students) {
-                info_students = "Estudantes presentes na fase:<br/> "
-                d.students.forEach(function (student) {
-                    info_students = info_students.concat(student.name).concat("<br/>");
-                });
-            }
-            div.transition()
-                .duration(200)
-                .style("opacity", .9);
-            div.html(info_students)
-                .style("left", (d3.event.pageX) + "px")
-                .style("top", (d3.event.pageY - 50) + "px");
+            d3.json("http://localhost:8000/api/node/" + d.node_id + "/students", function (data) {
+                var info_students = "Não há estudantes"
+                if (d.students) {
+                    info_students = "Estudantes presentes na fase:<br/> "
+                    d.students.forEach(function (student) {
+                        info_students = info_students.concat(student.name).concat("<br/>");
+                    });
+                }
+                div.transition()
+                    .duration(200)
+                    .style("opacity", .9);
+                div.html(info_students)
+                    .style("left", (d3.event.pageX) + "px")
+                    .style("top", (d3.event.pageY - 50) + "px");
+            });
         }).on("mouseout", function (d) {
             div.transition()
                 .duration(500)
@@ -86,10 +88,10 @@ function update(source) {
         .attr("r", 1e-6)
         .style("fill", function (d) { return d._children ? "lightsteelblue" : "#fff"; });
 
-    
+
     nodeEnter.append("text")
-        .attr("x", function (d) { return d.children || d._children ? -13 : 13; })
-        .attr("dy", ".35em")
+        .attr("x", function (d) { return d.children || d._children ? -13 : -100; })
+        .attr("y", function (d) { return d.children || d._children ? -13 : -20; })
         .attr("text-anchor", function (d) { return d.children || d._children ? "end" : "start"; })
         .text(function (d) { return d.name; })
         .style("fill-opacity", 1e-6);
@@ -122,7 +124,7 @@ function update(source) {
     var link = svg.selectAll("path.link")
         .data(links, function (d) { return d.target.id; });
 
-    
+
     // Enter any new links at the parent's previous position.
     link.enter().insert("path", "g")
         .attr("class", "link")
@@ -154,12 +156,27 @@ function update(source) {
 
 // Toggle children on click.
 function click(d) {
-    if (d.children) {
-        d._children = d.children;
-        d.children = null;
+    if (d.classe_id) {
+        if (d.children) {
+            d._children = d.children;
+            d.children = null;
+        } else {
+            d.children = d._children;
+            d._children = null;
+        }
+        update(d);
     } else {
-        d.children = d._children;
-        d._children = null;
+        d3.json("http://localhost:8000/api/node/" + d.node_id, function (data) {
+
+            if (d.children) {
+                d._children = d.children;
+                d.children = null;
+            } else {
+                d.children = data;
+                d._children = null;
+            }
+            update(d);
+        });
     }
-    update(d);
+
 }
