@@ -15,7 +15,7 @@ var diagonal = d3.svg.diagonal()
 
 // Colors as an array
 // https://github.com/mbostock/d3/wiki/Ordinal-Scales#category20
-var colors = d3.scale.linear().domain([0, 10]).range(["red", "green"]);
+var colors = d3.scale.linear().domain([0,5, 10]).range(["#DD2C00","#FFD600", "#1B5E20"]);
 
 var svg = d3.select("body").append("svg")
     .attr("width", width + margin.right + margin.left)
@@ -106,8 +106,10 @@ function update(source) {
     nodeUpdate.select("circle")
         .attr("r", 20)
         .style("fill", function (d) { 
-            return d.node_color;
-            return d._children ? "lightsteelblue" : "#fff"; });
+            if (d.node_avg == null){
+                return "blue";
+            }
+            return colors(d.node_avg)});
 
     nodeUpdate.select("text")
         .style("fill-opacity", 1);
@@ -137,7 +139,11 @@ function update(source) {
             return diagonal({ source: o, target: o });
         })
         .style("stroke", function (d, i) {
-            return d.target.node_color;
+            if (d.target.node_avg == null){
+                return "blue";
+            }
+            console.log("Media do nó= "+d.target.node_avg)
+            return colors(d.target.node_avg);
         });
 
     // Transition links to their new position.

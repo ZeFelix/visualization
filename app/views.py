@@ -2,8 +2,9 @@ from astroid import objects
 from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from django.db.models import Avg
 
-from app.models import Classes, Node, Student
+from app.models import Classes, Node, Student, StudentInformations
 from app.serializer import ActivitySerializer, ClassesSerialzer, \
     NodeSerializer, StudentSerializer
 
@@ -32,20 +33,21 @@ class AllList(APIView):
         node = Node.objects.filter(course=course, node_start=True).first()
         data_students = []
         if node:
-            students = StudentSerializer(node.students, many=True)
-            data_students = students.data
+            students = node.students.all()
+            students_serializer = StudentSerializer(students, many=True)
+            data_students = students_serializer.data
 
         data = []
         if node:
             data.append({
-                "node_color" : node.color_representation,
                 "node_name": node.name,
                 "node_id": node.id,
+                "node_avg" : NodeDetail.get_node_average(node,students),
                 "name": node.activity.first().name,
                 "students":data_students
             })
         return data
-
+    
 
 class NodeDetail(APIView):
 
@@ -55,15 +57,26 @@ class NodeDetail(APIView):
         data = []
         for node in nodes:
             if node:
-                students = StudentSerializer(node.students, many=True)
+                students = node.students.all()
+                students_serializer = StudentSerializer(students, many=True)
+                data_students = students_serializer.data
                 data.append({
-                    "node_color" : node.color_representation,
                     "node_name": node.name,
                     "node_id": node.id,
+                    "node_avg" : self.get_node_average(node,students),
                     "name": node.activity.first().name,
-                    "students":students.data
+                    "students":students_serializer.data
                 })
         return Response(data)
+    
+    @classmethod
+    def get_node_average(self,node,students):
+        """
+        calcula a média das notas dos alunos naquele nó para aquela atividade
+        """
+        students_ids = list(students.values_list("id",flat=True))
+        average = StudentInformations.objects.filter(node=node.id,student__in=students_ids).aggregate(Avg('notes'))
+        return average["notes__avg"]
 
 
 class StudentDetail(APIView):

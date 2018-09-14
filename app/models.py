@@ -24,12 +24,6 @@ class Activity(models.Model):
     def __str__(self):
         return self.name
 
-class Level(models.Model):
-    depth = models.IntegerField("Nível")
-
-    def __str__(self):
-        return str(self.depth)
-
 class Node(models.Model):
     name = models.CharField("Nome do Nós", max_length=50)
     activity = models.ManyToManyField(Activity, verbose_name="Atividades")
@@ -38,11 +32,6 @@ class Node(models.Model):
     course = models.ForeignKey("Course", verbose_name="Curso que o nó pertence", on_delete=models.CASCADE, blank=True, null=True)
     node_end = models.BooleanField("Nó fim (Folha)?",default=False)
     node_start = models.BooleanField("Nó inicio",default=False)
-    depth = models.ForeignKey(Level, verbose_name=("Nível"), on_delete=models.CASCADE,blank=True, null=True)
-    color_representation = models.CharField("Cor da média dos alunos (hex)", max_length=50, default="#00FF00")
-
-    class Meta:
-        ordering = ["depth"]
 
     def __str__(self):
         return str(self.name) +"-"+str(self.get_activities())
@@ -53,7 +42,7 @@ class Node(models.Model):
 class StudentInformations(models.Model):
     node = models.ForeignKey(Node, verbose_name="Nome do Nós", on_delete=models.CASCADE)
     student = models.ForeignKey(Student, verbose_name="Estudantes", on_delete=models.CASCADE)
-    notes = models.DecimalField("Nota do Aluno", max_digits=2, decimal_places=2,blank=True, null=True)
+    notes = models.DecimalField("Nota do Aluno", max_digits=4, decimal_places=2,blank=True, null=True)
 
 class Course(models.Model):
     name = models.CharField("Nome do Curso", max_length=50)

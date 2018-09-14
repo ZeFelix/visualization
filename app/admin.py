@@ -6,12 +6,15 @@ class StudentInformationsInline(admin.TabularInline):
     model = StudentInformations 
     extra = 1 
 
-class NodestAdmin(admin.ModelAdmin): 
+class StudentAdmin(admin.ModelAdmin): 
+    list_display = ("name","classe")
+
+class NodesAdmin(admin.ModelAdmin): 
     inlines = (StudentInformationsInline,) 
-    list_display = ("name","get_activities","node_parent","depth","color_representation")
+    list_display = ("name","get_activities","node_parent")
 
 admin.site.register(Classes)
-admin.site.register(Student)
+admin.site.register(Student,StudentAdmin)
 admin.site.register(Activity)
-admin.site.register(Node,NodestAdmin)
+admin.site.register(Node,NodesAdmin)
 admin.site.register(Course)
