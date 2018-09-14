@@ -24,7 +24,7 @@ var svg = d3.select("body").append("svg")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 
-d3.json("http://localhost:8000/api/all", function (data) {
+d3.json("/api/all", function (data) {
     root = {
         "name": "Inicio",
         "root": true,
@@ -179,7 +179,7 @@ function click(d) {
         }
         update(d);
     } else {
-        d3.json("http://localhost:8000/api/node/" + d.node_id, function (data) {
+        d3.json("/api/node/" + d.node_id, function (data) {
 
             if (d.children) {
                 d._children = d.children;
