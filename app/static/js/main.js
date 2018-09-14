@@ -1,6 +1,6 @@
 // ************** Generate the tree diagram	 *****************
 var margin = { top: 20, right: 120, bottom: 20, left: 100 },
-    width = 2000 - margin.right - margin.left,
+    width = 5000 - margin.right - margin.left,
     height = 500 - margin.top - margin.bottom;
 
 var i = 0,
@@ -13,6 +13,9 @@ var tree = d3.layout.tree()
 var diagonal = d3.svg.diagonal()
     .projection(function (d) { return [d.y, d.x]; });
 
+// Colors as an array
+// https://github.com/mbostock/d3/wiki/Ordinal-Scales#category20
+var colors = d3.scale.linear().domain([0, 10]).range(["red", "green"]);
 
 var svg = d3.select("body").append("svg")
     .attr("width", width + margin.right + margin.left)
@@ -20,9 +23,11 @@ var svg = d3.select("body").append("svg")
     .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+
 d3.json("http://localhost:8000/api/all", function (data) {
     root = {
         "name": "Inicio",
+        "root": true,
         "parent": null,
         "children": data
     };
@@ -46,7 +51,7 @@ function update(source) {
     links = tree.links(nodes);
 
     // Normalize for fixed-depth.
-    nodes.forEach(function (d) { d.y = d.depth * 140; });
+    nodes.forEach(function (d) { d.y = d.depth * 180; });
 
     // Update the nodes…
     var node = svg.selectAll("g.node")
@@ -58,31 +63,28 @@ function update(source) {
         .attr("transform", function (d) { return "translate(" + source.y0 + "," + source.x0 + ")"; })
         .on("click", click)
         .on("mouseover", function (d) {
-            d3.json("http://localhost:8000/api/node/" + d.node_id + "/students", function (data) {
-                var info_students = "Não há estudantes"
+            var info_students;
+            if (d.classe_id) {
+                info_students = "A turma possui: " + d.students_quantity + " Alunos. <br/>";
+            } else {
                 if (d.students) {
-                    info_students = "Estudantes presentes na fase:<br/> "
+                    info_students = "Estudantes presentes na fase:<br/> ";
                     d.students.forEach(function (student) {
                         info_students = info_students.concat(student.name).concat("<br/>");
                     });
                 }
-                div.transition()
-                    .duration(200)
-                    .style("opacity", .9);
-                div.html(info_students)
-                    .style("left", (d3.event.pageX) + "px")
-                    .style("top", (d3.event.pageY - 50) + "px");
-            });
+            }
+            div.transition()
+                .duration(200)
+                .style("opacity", .9);
+            div.html(info_students)
+                .style("left", (d3.event.pageX - 70) + "px")
+                .style("top", (d3.event.pageY - 60) + "px");
         }).on("mouseout", function (d) {
             div.transition()
                 .duration(500)
                 .style("opacity", 0);
         });
-    /*.on("mouseout", function () {
-        // Remove the info text on mouse out.
-        d3.select(this).select('text.info').remove()
-    });*/
-    ;;
 
     nodeEnter.append("circle")
         .attr("r", 1e-6)
@@ -102,8 +104,10 @@ function update(source) {
         .attr("transform", function (d) { return "translate(" + d.y + "," + d.x + ")"; });
 
     nodeUpdate.select("circle")
-        .attr("r", 10)
-        .style("fill", function (d) { return d._children ? "lightsteelblue" : "#fff"; });
+        .attr("r", 20)
+        .style("fill", function (d) { 
+            return d.node_color;
+            return d._children ? "lightsteelblue" : "#fff"; });
 
     nodeUpdate.select("text")
         .style("fill-opacity", 1);
@@ -131,6 +135,9 @@ function update(source) {
         .attr("d", function (d) {
             var o = { x: source.x0, y: source.y0 };
             return diagonal({ source: o, target: o });
+        })
+        .style("stroke", function (d, i) {
+            return d.target.node_color;
         });
 
     // Transition links to their new position.
@@ -156,7 +163,7 @@ function update(source) {
 
 // Toggle children on click.
 function click(d) {
-    if (d.classe_id) {
+    if (d.classe_id || d.root) {
         if (d.children) {
             d._children = d.children;
             d.children = null;
@@ -180,3 +187,4 @@ function click(d) {
     }
 
 }
+

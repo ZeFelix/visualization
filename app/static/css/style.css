@@ -15,8 +15,8 @@
 
     .link {
         fill: none;
-        stroke: #9999ff;
-        stroke-width: 12px;
+        stroke: blue;
+        stroke-width: 20px;
     }
 
     .tooltip {	

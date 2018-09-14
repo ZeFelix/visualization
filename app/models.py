@@ -39,6 +39,7 @@ class Node(models.Model):
     node_end = models.BooleanField("Nó fim (Folha)?",default=False)
     node_start = models.BooleanField("Nó inicio",default=False)
     depth = models.ForeignKey(Level, verbose_name=("Nível"), on_delete=models.CASCADE,blank=True, null=True)
+    color_representation = models.CharField("Cor da média dos alunos (hex)", max_length=50, default="#00FF00")
 
     class Meta:
         ordering = ["depth"]
@@ -49,9 +50,6 @@ class Node(models.Model):
     def get_activities(self):
         return "\n".join([p.name for p in self.activity.all()])
     
-
-    
-
 class StudentInformations(models.Model):
     node = models.ForeignKey(Node, verbose_name="Nome do Nós", on_delete=models.CASCADE)
     student = models.ForeignKey(Student, verbose_name="Estudantes", on_delete=models.CASCADE)

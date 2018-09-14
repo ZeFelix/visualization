@@ -8,7 +8,7 @@ class StudentInformationsInline(admin.TabularInline):
 
 class NodestAdmin(admin.ModelAdmin): 
     inlines = (StudentInformationsInline,) 
-    list_display = ("name","get_activities","node_parent","depth")
+    list_display = ("name","get_activities","node_parent","depth","color_representation")
 
 admin.site.register(Classes)
 admin.site.register(Student)
