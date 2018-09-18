@@ -38,7 +38,7 @@ class AllList(APIView):
             data_students = students_serializer.data
 
         data = []
-        if node:
+        if node and students.count():
             data.append({
                 "node_name": node.name,
                 "node_id": node.id,
@@ -58,15 +58,17 @@ class NodeDetail(APIView):
         for node in nodes:
             if node:
                 students = node.students.all()
-                students_serializer = StudentSerializer(students, many=True)
-                data_students = students_serializer.data
-                data.append({
-                    "node_name": node.name,
-                    "node_id": node.id,
-                    "node_avg" : self.get_node_average(node,students),
-                    "name": node.activity.first().name,
-                    "students":students_serializer.data
-                })
+                if students.count():
+                    #só adciona um nó se o mesmo tiver algum aluno
+                    students_serializer = StudentSerializer(students, many=True)
+                    data_students = students_serializer.data
+                    data.append({
+                        "node_name": node.name,
+                        "node_id": node.id,
+                        "node_avg" : self.get_node_average(node,students),
+                        "name": node.activity.first().name,
+                        "students":students_serializer.data
+                    })
         return Response(data)
     
     @classmethod

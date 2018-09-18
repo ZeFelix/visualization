@@ -15,7 +15,7 @@ var diagonal = d3.svg.diagonal()
 
 // Colors as an array
 // https://github.com/mbostock/d3/wiki/Ordinal-Scales#category20
-var colors = d3.scale.linear().domain([0,5, 10]).range(["#DD2C00","#FFD600", "#1B5E20"]);
+var colors = d3.scale.linear().domain([0, 5, 10]).range(["#DD2C00", "#FFD600", "#1B5E20"]);
 
 var svg = d3.select("body").append("svg")
     .attr("width", width + margin.right + margin.left)
@@ -34,7 +34,7 @@ d3.json("/api/all", function (data) {
     root.x0 = height / 2;
     root.y0 = 0;
 
-    update(root);
+    root.children.forEach(expand);
 });
 
 //div tooltip
@@ -105,11 +105,12 @@ function update(source) {
 
     nodeUpdate.select("circle")
         .attr("r", 20)
-        .style("fill", function (d) { 
-            if (d.node_avg == null){
+        .style("fill", function (d) {
+            if (d.node_avg == null) {
                 return "blue";
             }
-            return colors(d.node_avg)});
+            return colors(d.node_avg)
+        });
 
     nodeUpdate.select("text")
         .style("fill-opacity", 1);
@@ -139,10 +140,9 @@ function update(source) {
             return diagonal({ source: o, target: o });
         })
         .style("stroke", function (d, i) {
-            if (d.target.node_avg == null){
+            if (d.target.node_avg == null) {
                 return "blue";
             }
-            console.log("Media do nó= "+d.target.node_avg)
             return colors(d.target.node_avg);
         });
 
@@ -174,23 +174,41 @@ function click(d) {
             d._children = d.children;
             d.children = null;
         } else {
-            d.children = d._children;
-            d._children = null;
+            if (d._children != null) {
+                d.children = d._children;
+                d._children = null;
+                d.children.forEach(expand);
+            }
+        }
+        update(d);
+    } else {
+        //código para mostrar os gráficos
+        console.log("treta")
+    }
+}
+
+// expandir todos os nós
+function expand(d) {
+    if (d.classe_id || d.root) {
+        if (d.children) {
+            d._children = d.children;
+            d.children = null;
+        } else {
+            if (d._children != null) {
+                d.children = d._children;
+                d._children = null;
+                d.children.forEach(expand);
+            }
         }
         update(d);
     } else {
         d3.json("/api/node/" + d.node_id, function (data) {
-
-            if (d.children) {
-                d._children = d.children;
-                d.children = null;
-            } else {
-                d.children = data;
-                d._children = null;
-            }
+            d.children = data;
+            d._children = null;
+            d.children.forEach(expand);
             update(d);
         });
     }
-
 }
+
 
