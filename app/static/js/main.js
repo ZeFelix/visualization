@@ -15,7 +15,7 @@ var diagonal = d3.svg.diagonal()
 
 // Colors as an array
 // https://github.com/mbostock/d3/wiki/Ordinal-Scales#category20
-var colors = d3.scale.linear().domain([-1,0, 5, 10]).range(["#424242","#DD2C00", "#FFD600", "#1B5E20"]);
+var colors = d3.scale.linear().domain([-2,-1,0, 5, 10]).range(["#7E57C2","#424242","#DD2C00", "#FFD600", "#1B5E20"]);
 
 var svg = d3.select("#container_visualization").append("svg")
     .attr("width", width + margin.right + margin.left)
@@ -111,7 +111,7 @@ function update(source) {
     nodeUpdate.select("circle")
         .attr("r", 20)
         .style("fill", function (d) {
-            if (d.node_avg == null || d.node_end == true) {
+            if (d.node_avg == null) {
                 return "blue";
             }
             return colors(d.node_avg)
@@ -146,7 +146,7 @@ function update(source) {
             return diagonal({ source: o, target: o });
         })
         .style("stroke", function (d, i) {
-            if (d.target.node_avg == null || d.target.node_end == true) {
+            if (d.target.node_avg == null) {
                 return "blue";
             }
             return colors(d.target.node_avg);

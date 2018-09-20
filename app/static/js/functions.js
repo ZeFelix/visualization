@@ -45,6 +45,9 @@ function clear_filter_params() {
     init_get_json();
 }
 
+/**
+ * Função para obter os parametros do filtro
+ */
 function get_params_filter() {
     return params_filter;
 }

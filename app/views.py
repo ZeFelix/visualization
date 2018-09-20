@@ -14,6 +14,10 @@ from app.serializer import ActivitySerializer, ClassesSerialzer, \
 
 
 class AllList(APIView):
+    """
+    Classe para listar todas as turmas do curso e seu nó raiz
+    Método http permuitido: get
+    """
 
     def get(self, request):
         informations = []
@@ -35,51 +39,15 @@ class AllList(APIView):
         data = []
 
         if node:
-            try:
-                color_blind = True if request.GET["color_blind"] == "true" else False
-                start_ager = int(request.GET["start_ager"]) if request.GET["start_ager"] != "null" else 0
-                end_ager = int(request.GET["end_ager"]) if request.GET["end_ager"] != "null" else 100 
-                sex_m = request.GET["sex_m"]
-                sex_f = request.GET["sex_f"]
-                not_married = request.GET["not_married"]
-                married = request.GET["married"]
-                public = request.GET["public"]
-                particular = request.GET["particular"]
-                students = node.students.filter(Q(color_blind=color_blind), Q(sex=sex_f) | Q(
-                    sex=sex_m), Q(school_origin=public) | Q(school_origin=particular),
-                    Q(civil_status=married) | Q(civil_status=not_married),ager__range=(start_ager,end_ager))
-            except Exception as a:
-                print(a)
-                students = node.students.all()
-
-            if students.count():
-                # só adciona um nó se o mesmo tiver algum aluno
-                students_serializer = StudentSerializer(
-                    students, many=True)
-                data_students = students_serializer.data
-                data.append({
-                    "node_name": node.name,
-                    "node_id": node.id,
-                    "node_end": node.node_end,
-                    "node_avg": NodeDetail.get_node_average(node, students),
-                    "name": node.activity.first().name,
-                    "students": students_serializer.data
-                })
-            elif node.students.count():
-                # se não tiver aluno após o filtro
-                # porém existem alunos ele adiciona uma média negativa para indicar
-                data.append({
-                    "node_name": node.name,
-                    "node_id": node.id,
-                    "node_end": node.node_end,
-                    "node_avg": -1,
-                    "name": node.activity.first().name,
-                    "students": []
-                })
+            data.append(NodeDetail.format_node_information(node,request))
         return data
 
 
 class NodeDetail(APIView):
+    """
+    Classe que contém os detalhes dos nós
+    Método http permito: get
+    """
 
     def get(self, request, node_id):
         node_parent = Node.objects.get(pk=node_id)
@@ -87,48 +55,7 @@ class NodeDetail(APIView):
         data = []
         for node in nodes:
             if node:
-                try:
-                    color_blind = True if request.GET["color_blind"] == "true" else False
-                    start_ager = int(request.GET["start_ager"]) if request.GET["start_ager"] != "null" else 0
-                    end_ager = int(request.GET["end_ager"]) if request.GET["end_ager"] != "null" else 100 
-                    sex_m = request.GET["sex_m"]
-                    sex_f = request.GET["sex_f"]
-                    not_married = request.GET["not_married"]
-                    married = request.GET["married"]
-                    public = request.GET["public"]
-                    particular = request.GET["particular"]
-                    students = node.students.filter(Q(color_blind=color_blind), Q(sex=sex_f) | Q(
-                    sex=sex_m), Q(school_origin=public) | Q(school_origin=particular),
-                    Q(civil_status=married) | Q(civil_status=not_married),ager__range=(start_ager,end_ager))
-                except Exception as a:
-                    print(a)
-                    students = node.students.all()
-
-                if students.count():
-                    # só adciona um nó se o mesmo tiver algum aluno
-                    students_serializer = StudentSerializer(
-                        students, many=True)
-                    data_students = students_serializer.data
-                    data.append({
-                        "node_name": node.name,
-                        "node_id": node.id,
-                        "node_end": node.node_end,
-                        "node_avg": self.get_node_average(node, students),
-                        "name": node.activity.first().name,
-                        "students": students_serializer.data
-                    })
-                elif node.students.count():
-                    # se não tiver aluno após o filtro
-                    # porém existem alunos ele adiciona uma média negativa para indicar
-                    data.append({
-                        "node_name": node.name,
-                        "node_id": node.id,
-                        "node_end": node.node_end,
-                        "node_avg": -1,
-                        "name": node.activity.first().name,
-                        "students": []
-                    })
-
+                data.append(self.format_node_information(node, request))
         return Response(data)
 
     @classmethod
@@ -140,6 +67,56 @@ class NodeDetail(APIView):
         average = StudentInformations.objects.filter(
             node=node.id, student__in=students_ids).aggregate(Avg('notes'))
         return average["notes__avg"]
+
+    @classmethod
+    def format_node_information(self, node, request):
+        """
+        Método para formatar o as informações de retorno do nó
+        Recebe um nó por paramentro
+        Recebe o request para verificar se há paramentros de filtro na requisição get
+        """
+        node_formatation = None
+        try:
+            color_blind = True if request.GET["color_blind"] == "true" else False
+            start_ager = int(
+                request.GET["start_ager"]) if request.GET["start_ager"] != "null" else 0
+            end_ager = int(
+                request.GET["end_ager"]) if request.GET["end_ager"] != "null" else 100
+            sex_m = request.GET["sex_m"]
+            sex_f = request.GET["sex_f"]
+            not_married = request.GET["not_married"]
+            married = request.GET["married"]
+            public = request.GET["public"]
+            particular = request.GET["particular"]
+            students = node.students.filter(Q(color_blind=color_blind), Q(sex=sex_f) | Q(
+                sex=sex_m), Q(school_origin=public) | Q(school_origin=particular),
+                Q(civil_status=married) | Q(civil_status=not_married), ager__range=(start_ager, end_ager))
+        except Exception as a:
+            print(a)
+            students = node.students.all()
+        if students.count():
+            # só adciona um nó se o mesmo tiver algum aluno
+            students_serializer = StudentSerializer(
+                students, many=True)
+            data_students = students_serializer.data
+            node_formatation = {
+                "node_name": node.name,
+                "node_id": node.id,
+                "node_avg": self.get_node_average(node, students),
+                "name": node.activity.first().name,
+                "students": students_serializer.data
+            }
+        elif node.students.count():
+            # se não tiver aluno após o filtro
+            # porém existem alunos ele adiciona uma média negativa para indicar
+            node_formatation = {
+                "node_name": node.name,
+                "node_id": node.id,
+                "node_avg": -1,
+                "name": node.activity.first().name,
+                "students": []
+            }
+        return node_formatation
 
 
 class StudentDetail(APIView):
