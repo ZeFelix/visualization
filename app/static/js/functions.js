@@ -27,6 +27,19 @@ function set_filter_params() {
 
 }
 
+/**
+ * Função para ativar ou desativar os inputs de entrada de idade
+ */
+function ager_checked_click(){
+    if (d3.select("#ager").property("checked")) {
+        d3.select("#start_ager").attr("disabled", null);
+        d3.select("#end_ager").attr("disabled", null);
+    }else{
+        d3.select("#start_ager").property("value","").attr("disabled", true);
+        d3.select("#end_ager").property("value","").attr("disabled", true);
+    }
+}
+
 function clear_filter_params() {
     set_field_default();
     init_get_json();
@@ -35,6 +48,7 @@ function clear_filter_params() {
 function get_params_filter() {
     return params_filter;
 }
+
 
 /**
  * Função para limpar os campos de filtro
@@ -49,6 +63,6 @@ function set_field_default() {
     d3.select("#public").property("checked", true);
     d3.select("#particular").property("checked", true);
     d3.select("#ager").property("checked", false);
-    d3.select("#start_ager").property("value","");
-    d3.select("#end_ager").property("value","");
+    d3.select("#start_ager").property("value", "");
+    d3.select("#end_ager").property("value", "");
 }
