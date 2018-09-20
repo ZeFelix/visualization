@@ -15,7 +15,7 @@ var diagonal = d3.svg.diagonal()
 
 // Colors as an array
 // https://github.com/mbostock/d3/wiki/Ordinal-Scales#category20
-var colors = d3.scale.linear().domain([0, 5, 10]).range(["#DD2C00", "#FFD600", "#1B5E20"]);
+var colors = d3.scale.linear().domain([-1,0, 5, 10]).range(["#424242","#DD2C00", "#FFD600", "#1B5E20"]);
 
 var svg = d3.select("#container_visualization").append("svg")
     .attr("width", width + margin.right + margin.left)
@@ -23,19 +23,23 @@ var svg = d3.select("#container_visualization").append("svg")
     .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+init_get_json()
 
-d3.json("/api/all", function (data) {
-    root = {
-        "name": "Inicio",
-        "root": true,
-        "parent": null,
-        "children": data
-    };
-    root.x0 = height / 2;
-    root.y0 = 0;
+function init_get_json(params_filter="") {
+    d3.json("/api/all"+params_filter, function (data) {
+        root = {
+            "name": "Inicio",
+            "root": true,
+            "parent": null,
+            "children": data
+        };
+        root.x0 = height / 2;
+        root.y0 = 0;
 
-    root.children.forEach(expand);
-});
+        root.children.forEach(expand);
+    });
+
+}
 
 //div tooltip
 var div = d3.select("body").append("div")
@@ -204,7 +208,8 @@ function expand(d) {
         }
         update(d);
     } else {
-        d3.json("/api/node/" + d.node_id, function (data) {
+        var params_filter = get_params_filter()
+        d3.json("/api/node/" + d.node_id + params_filter, function (data) {
             d.children = data;
             d._children = null;
             d.children.forEach(expand);
@@ -212,5 +217,3 @@ function expand(d) {
         });
     }
 }
-
-

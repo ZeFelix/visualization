@@ -40,14 +40,14 @@
 
         <li><br>
             <label>
-                <input type="checkbox" id="user"/>
+                <input type="checkbox" id="color_blind" />
                 <span>Usuário Daltônicos</span>
             </label>
 
         </li>
         <li>
             <label>
-                <input type="checkbox" id="ager"/>
+                <input type="checkbox" id="ager" />
                 <span>Faixa etária:</span>
             </label>
 
@@ -63,11 +63,11 @@
             Sexo:
             <br>
             <label>
-                <input type="checkbox" id="sex_m" />
+                <input type="checkbox" id="sex_m" checked />
                 <span>Masculino</span>
             </label>
             <label>
-                <input type="checkbox" id="sex_f"/>
+                <input type="checkbox" id="sex_f" checked />
                 <span>Feminino</span>
             </label>
 
@@ -76,11 +76,11 @@
             Estado Civil:
             <br>
             <label>
-                <input type="checkbox" id="not_married"/>
+                <input type="checkbox" id="not_married" checked />
                 <span>Solteiro</span>
             </label>
             <label>
-                <input type="checkbox" id="married"/>
+                <input type="checkbox" id="married" checked />
                 <span>Casado</span>
             </label>
         </li>
@@ -88,16 +88,17 @@
             Escola de Origem:
             <br>
             <label>
-                <input type="checkbox" id="public"/>
+                <input type="checkbox" id="public" checked />
                 <span>Pública</span>
             </label>
             <label>
-                <input type="checkbox" id="particular"/>
+                <input type="checkbox" id="particular" checked />
                 <span>Particular</span>
             </label>
         </li>
         <li class="row">
-            <a class="waves-effect waves-light btn-small col s4">ok</a>
+            <a class="waves-effect waves-light btn-small col s4" onclick="set_filter_params()">Ok</a>
+            <a class="waves-effect waves-light btn-small col s4 red" onclick="clear_filter_params()">Limpar</a>
         </li>
     </ul>
 
@@ -112,6 +113,7 @@
 
 
     <script type="text/javascript" src="{% static 'js/main.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/functions.js' %}"></script>
     <!-- Compiled and minified JavaScript -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 
