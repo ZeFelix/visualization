@@ -42,6 +42,7 @@ class AllList(APIView):
             data.append({
                 "node_name": node.name,
                 "node_id": node.id,
+                "node_end":node.node_end,
                 "node_avg" : NodeDetail.get_node_average(node,students),
                 "name": node.activity.first().name,
                 "students":data_students
@@ -65,6 +66,7 @@ class NodeDetail(APIView):
                     data.append({
                         "node_name": node.name,
                         "node_id": node.id,
+                        "node_end":node.node_end,
                         "node_avg" : self.get_node_average(node,students),
                         "name": node.activity.first().name,
                         "students":students_serializer.data

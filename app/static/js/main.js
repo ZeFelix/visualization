@@ -17,7 +17,7 @@ var diagonal = d3.svg.diagonal()
 // https://github.com/mbostock/d3/wiki/Ordinal-Scales#category20
 var colors = d3.scale.linear().domain([0, 5, 10]).range(["#DD2C00", "#FFD600", "#1B5E20"]);
 
-var svg = d3.select("body").append("svg")
+var svg = d3.select("#container_visualization").append("svg")
     .attr("width", width + margin.right + margin.left)
     .attr("height", height + margin.top + margin.bottom)
     .append("g")
@@ -103,10 +103,11 @@ function update(source) {
         .duration(duration)
         .attr("transform", function (d) { return "translate(" + d.y + "," + d.x + ")"; });
 
+    //atualiza a cor do nó de acordo com a nota ou se for um nó fim
     nodeUpdate.select("circle")
         .attr("r", 20)
         .style("fill", function (d) {
-            if (d.node_avg == null) {
+            if (d.node_avg == null || d.node_end == true) {
                 return "blue";
             }
             return colors(d.node_avg)
@@ -133,6 +134,7 @@ function update(source) {
 
 
     // Enter any new links at the parent's previous position.
+    // set as cores do link de acordo com a média das notas dos alunos
     link.enter().insert("path", "g")
         .attr("class", "link")
         .attr("d", function (d) {
@@ -140,7 +142,7 @@ function update(source) {
             return diagonal({ source: o, target: o });
         })
         .style("stroke", function (d, i) {
-            if (d.target.node_avg == null) {
+            if (d.target.node_avg == null || d.target.node_end == true) {
                 return "blue";
             }
             return colors(d.target.node_avg);

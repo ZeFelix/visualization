@@ -1,0 +1,120 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+
+    <title>Tree Example</title>
+    <!-- load the d3.js library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.js" integrity="sha256-gfQwA6PlkZsLqWu4bU4hXPrbTqzixm0B5MdvBLI+Oas="
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js" integrity="sha256-dsOXGNHAo/syFnazt+KTBsCQeRmlcW1XKL0bCK4Baec="
+        crossorigin="anonymous"></script>
+
+    <link href="{% static 'css/style.css' %}" type="text/css" rel="stylesheet">
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+
+
+
+</head>
+
+<body>
+    <!-- NAVBAR -->
+    <header>
+        <nav>
+            <div class="nav-wrapper center">
+                <h2>
+                    Data Visualization
+                </h2>
+            </div>
+        </nav>
+    </header>
+
+
+
+
+    <ul id="nav-mobile" class="sidenav sidenav-fixed" style="transform: translateX(0px);">
+
+        <li><br>
+            <label>
+                <input type="checkbox" id="user"/>
+                <span>Usuário Daltônicos</span>
+            </label>
+
+        </li>
+        <li>
+            <label>
+                <input type="checkbox" id="ager"/>
+                <span>Faixa etária:</span>
+            </label>
+
+            <label class="col s5">
+                <input placeholder="De" id="start_ager" type="text" class="active validate" required />
+            </label>
+            <label class="col s5">
+                <input placeholder="Até" id="end_ager" type="text" class="active validate" required />
+            </label>
+
+        </li>
+        <li>
+            Sexo:
+            <br>
+            <label>
+                <input type="checkbox" id="sex_m" />
+                <span>Masculino</span>
+            </label>
+            <label>
+                <input type="checkbox" id="sex_f"/>
+                <span>Feminino</span>
+            </label>
+
+        </li>
+        <li>
+            Estado Civil:
+            <br>
+            <label>
+                <input type="checkbox" id="not_married"/>
+                <span>Solteiro</span>
+            </label>
+            <label>
+                <input type="checkbox" id="married"/>
+                <span>Casado</span>
+            </label>
+        </li>
+        <li>
+            Escola de Origem:
+            <br>
+            <label>
+                <input type="checkbox" id="public"/>
+                <span>Pública</span>
+            </label>
+            <label>
+                <input type="checkbox" id="particular"/>
+                <span>Particular</span>
+            </label>
+        </li>
+        <li class="row">
+            <a class="waves-effect waves-light btn-small col s4">ok</a>
+        </li>
+    </ul>
+
+    <main>
+        <div class="container" id="container_visualization">
+            {% block content %} {% endblock content %}
+        </div>
+
+    </main>
+
+
+
+
+    <script type="text/javascript" src="{% static 'js/main.js' %}"></script>
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
+</body>
+
+</html>
