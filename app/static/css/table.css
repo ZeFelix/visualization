@@ -1,0 +1,12 @@
+.tnt_zmenu_header {
+    background-color: steelblue;
+    color : white;
+}
+
+#tnt_tooltip_1 {
+    width: 300px;
+}
+
+#tnt_tooltip_1 table {
+    width: 100% !important;
+}

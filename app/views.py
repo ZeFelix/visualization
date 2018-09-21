@@ -102,7 +102,7 @@ class NodeDetail(APIView):
             node_formatation = {
                 "node_name": node.name,
                 "node_id": node.id,
-                "node_avg": self.get_node_average(node, students),
+                "node_avg": self.get_node_average(node, students) if not node.node_end else -2,
                 "name": node.activity.first().name,
                 "students": students_serializer.data
             }

@@ -30,13 +30,13 @@ function set_filter_params() {
 /**
  * Função para ativar ou desativar os inputs de entrada de idade
  */
-function ager_checked_click(){
+function ager_checked_click() {
     if (d3.select("#ager").property("checked")) {
         d3.select("#start_ager").attr("disabled", null);
         d3.select("#end_ager").attr("disabled", null);
-    }else{
-        d3.select("#start_ager").property("value","").attr("disabled", true);
-        d3.select("#end_ager").property("value","").attr("disabled", true);
+    } else {
+        d3.select("#start_ager").property("value", "").attr("disabled", true);
+        d3.select("#end_ager").property("value", "").attr("disabled", true);
     }
 }
 
@@ -69,3 +69,67 @@ function set_field_default() {
     d3.select("#start_ager").property("value", "");
     d3.select("#end_ager").property("value", "");
 }
+
+
+/**
+ * Função para gerar tabela de informações dos alunos
+ */
+
+function tabulate(data, columns) {
+    var table = d3.select("body").append("table")
+        .attr("style", "margin-left: 250px"),
+        thead = table.append("thead"),
+        tbody = table.append("tbody");
+
+    // append the header row
+    thead.append("tr")
+        .selectAll("th")
+        .data(columns)
+        .enter()
+        .append("th")
+        .text(function (column) { return column; });
+
+    // create a row for each object in the data
+    var rows = tbody.selectAll("tr")
+        .data(data)
+        .enter()
+        .append("tr");
+
+    // create a cell in each row for each column
+    var cells = rows.selectAll("td")
+        .data(function (row) {
+            return columns.map(function (column) {
+                return { column: column, value: row[column] };
+            });
+        })
+        .enter()
+        .append("td")
+        .attr("style", "font-family: Courier")
+        .html(function (d) { return d.value; });
+
+    return table;
+}
+
+/**
+ * Função para gerar tooltip com tabela de informações
+ */
+function tooltip_tablle(data) {
+
+    var obj = {};
+    obj.header = data.name;
+    obj.rows = [];
+    obj.rows.push({
+        "label": "Name",
+        "value": ""
+    });
+    data.students.forEach(function (student) {
+        obj.rows.push({
+            "label": student.name,
+            "value": "1"
+        });
+    });
+    var svg = d3.select("svg")[0][0];
+    tooltip.table()
+        .width(180)
+        .call(svg, obj);
+};

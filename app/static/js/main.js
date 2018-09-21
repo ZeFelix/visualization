@@ -15,7 +15,8 @@ var diagonal = d3.svg.diagonal()
 
 // Colors as an array
 // https://github.com/mbostock/d3/wiki/Ordinal-Scales#category20
-var colors = d3.scale.linear().domain([-2,-1,0, 5, 10]).range(["#7E57C2","#424242","#DD2C00", "#FFD600", "#1B5E20"]);
+// cores tag = [nó fim - caminho sem alunos(filtro) - nota 0 - nota 5 - nota 10]
+var colors = d3.scale.linear().domain([-2, -1, 0, 5, 10]).range(["#7E57C2", "#BDBDBD", "#DD2C00", "#FFD600", "#1B5E20"]);
 
 var svg = d3.select("#container_visualization").append("svg")
     .attr("width", width + margin.right + margin.left)
@@ -25,8 +26,8 @@ var svg = d3.select("#container_visualization").append("svg")
 
 init_get_json()
 
-function init_get_json(params_filter="") {
-    d3.json("/api/all"+params_filter, function (data) {
+function init_get_json(params_filter = "") {
+    d3.json("/api/all" + params_filter, function (data) {
         root = {
             "name": "Inicio",
             "root": true,
@@ -41,12 +42,6 @@ function init_get_json(params_filter="") {
 
 }
 
-//div tooltip
-var div = d3.select("body").append("div")
-    .attr("class", "tooltip")
-    .style("opacity", 0);
-
-// d3.select(self.frameElement).style("height", "500px");
 
 function update(source) {
 
@@ -64,35 +59,12 @@ function update(source) {
     // Enter any new nodes at the parent's previous position.
     var nodeEnter = node.enter().append("g")
         .attr("class", "node")
-        .attr("transform", function (d) { return "translate(" + source.y0 + "," + source.x0 + ")"; })
-        .on("click", click)
-        .on("mouseover", function (d) {
-            var info_students;
-            if (d.classe_id) {
-                info_students = "A turma possui: " + d.students_quantity + " Alunos. <br/>";
-            } else {
-                if (d.students) {
-                    info_students = "Estudantes presentes na fase:<br/> ";
-                    d.students.forEach(function (student) {
-                        info_students = info_students.concat(student.name).concat("<br/>");
-                    });
-                }
-            }
-            div.transition()
-                .duration(200)
-                .style("opacity", .9);
-            div.html(info_students)
-                .style("left", (d3.event.pageX - 70) + "px")
-                .style("top", (d3.event.pageY - 60) + "px");
-        }).on("mouseout", function (d) {
-            div.transition()
-                .duration(500)
-                .style("opacity", 0);
-        });
+        .attr("transform", function (d) { return "translate(" + source.y0 + "," + source.x0 + ")"; });
 
     nodeEnter.append("circle")
         .attr("r", 1e-6)
-        .style("fill", function (d) { return d._children ? "lightsteelblue" : "#fff"; });
+        .style("fill", function (d) { return d._children ? "lightsteelblue" : "#fff"; })
+        .on("click",click);
 
 
     nodeEnter.append("text")
@@ -149,6 +121,9 @@ function update(source) {
             if (d.target.node_avg == null) {
                 return "blue";
             }
+            if (d.target.node_avg == -2) {
+                return d.target.parent.node_avg
+            }
             return colors(d.target.node_avg);
         });
 
@@ -189,7 +164,7 @@ function click(d) {
         update(d);
     } else {
         //código para mostrar os gráficos
-        console.log("treta")
+        tooltip_tablle(d);
     }
 }
 
