@@ -74,10 +74,10 @@ class NodeDetail(APIView):
         Método para formatar o as informações de retorno do nó
         Recebe um nó por paramentro
         Recebe o request para verificar se há paramentros de filtro na requisição get
+        número -1: indica a cor de um nó que n tem aluno que pertence ao filtro
         """
         node_formatation = None
         try:
-            color_blind = True if request.GET["color_blind"] == "true" else False
             start_ager = int(
                 request.GET["start_ager"]) if request.GET["start_ager"] != "null" else 0
             end_ager = int(
@@ -88,7 +88,7 @@ class NodeDetail(APIView):
             married = request.GET["married"]
             public = request.GET["public"]
             particular = request.GET["particular"]
-            students = node.students.filter(Q(color_blind=color_blind), Q(sex=sex_f) | Q(
+            students = node.students.filter(Q(sex=sex_f) | Q(
                 sex=sex_m), Q(school_origin=public) | Q(school_origin=particular),
                 Q(civil_status=married) | Q(civil_status=not_married), ager__range=(start_ager, end_ager))
         except Exception as a:
@@ -101,13 +101,15 @@ class NodeDetail(APIView):
             node_formatation = {
                 "node_name": node.name,
                 "node_id": node.id,
-                "node_avg": self.get_node_average(node, students) if not node.node_end else -2,
+                "node_avg": self.get_node_average(node, students),
+                "node_end": node.node_end,
+                "node_evaluated": node.evaluated,
                 "name": node.activity.first().name,
                 "students": students_serializer.data
             }
         elif node.students.count():
             # se não tiver aluno após o filtro
-            # porém existem alunos ele adiciona uma média negativa para indicar
+            # porém existem alunos naquele nó, ele adiciona uma média negativa (-1) para indicar a cor do caminho(link)
             node_formatation = {
                 "node_name": node.name,
                 "node_id": node.id,

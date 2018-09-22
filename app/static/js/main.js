@@ -16,7 +16,10 @@ var diagonal = d3.svg.diagonal()
 // Colors as an array
 // https://github.com/mbostock/d3/wiki/Ordinal-Scales#category20
 // cores tag = [nó fim - caminho sem alunos(filtro) - nota 0 - nota 5 - nota 10]
+// sequencia das cores = [roxo, cinza, vermelho, amarelo, verde]
 var colors = d3.scale.linear().domain([-2, -1, 0, 5, 10]).range(["#7E57C2", "#BDBDBD", "#DD2C00", "#FFD600", "#1B5E20"]);
+// sequencia das cores daltonico = [roxo, cinza, vermelho(daltonico), amarelo(daltonico), verde(daltonico)]
+var color_blind = d3.scale.linear().domain([-2, -1, 0, 5, 10]).range(["#7E57C2", "#BDBDBD", "#fc8d59", "#ffffbf", "#91cf60"]);
 
 var svg = d3.select("#container_visualization").append("svg")
     .attr("width", width + margin.right + margin.left)
@@ -64,7 +67,7 @@ function update(source) {
     nodeEnter.append("circle")
         .attr("r", 1e-6)
         .style("fill", function (d) { return d._children ? "lightsteelblue" : "#fff"; })
-        .on("click",click);
+        .on("click", click);
 
 
     nodeEnter.append("text")
@@ -83,10 +86,23 @@ function update(source) {
     nodeUpdate.select("circle")
         .attr("r", 20)
         .style("fill", function (d) {
+            if (d.node_evaluated == false) {
+                /**
+                 * se o nó não for avaliado a cor do nó fica branca e a sua média permanece a do nó pai
+                 * ou seja, a média da turma permanece
+                 */
+                d.node_avg = d.parent.node_avg;
+                return "white";
+            }
             if (d.node_avg == null) {
                 return "blue";
             }
-            return colors(d.node_avg)
+            var tag_color_blind = d3.select("#color_blind").property("checked");
+
+            if (tag_color_blind) {
+                return color_blind(d.node_avg)
+            }
+            return colors(d.node_avg);
         });
 
     nodeUpdate.select("text")
@@ -118,13 +134,31 @@ function update(source) {
             return diagonal({ source: o, target: o });
         })
         .style("stroke", function (d, i) {
+            var avg;
+            if (d.target.node_evaluated == false) {
+                /**
+                 * se o nó não for avaliado o link é a cor do link do pai
+                 * ou seja, a média da turma permanece
+                 */
+                avg = d.target.parent.node_avg;
+            }
             if (d.target.node_avg == null) {
                 return "blue";
             }
-            if (d.target.node_avg == -2) {
-                return d.target.parent.node_avg
+            if (d.target.node_end) {
+                /**
+                 * Se for um nó fim, o link permanece com a cor do pai seu pai
+                 */
+                return avg = d.target.parent.node_avg;
             }
-            return colors(d.target.node_avg);
+            avg = d.target.node_avg;
+            
+            var tag_color_blind = d3.select("#color_blind").property("checked");
+
+            if (tag_color_blind) {
+                return color_blind(avg)
+            }
+            return colors(avg);
         });
 
     // Transition links to their new position.
@@ -168,7 +202,10 @@ function click(d) {
     }
 }
 
-// expandir todos os nós
+/**
+ * 
+ * expandir todos os nós 
+ */
 function expand(d) {
     if (d.classe_id || d.root) {
         if (d.children) {

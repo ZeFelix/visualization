@@ -29,7 +29,6 @@ class Student(models.Model):
 
     name = models.CharField("Nome do Aluno", max_length=50)
     sex = models.CharField("Sexo", max_length=2, choices=SEX_CHOICES, default="M")
-    color_blind = models.BooleanField("Daltônico", default=False)
     ager = models.IntegerField("Idade",default=0)
     civil_status = models.CharField("Estado civil", max_length=2, choices=CIVIL_STATUS_CHOICES,default="S")
     school_origin = models.CharField("Origem Escolar", max_length=2, choices=SCHOLL_ORIGIN_CHOICES, default="PB")
@@ -57,6 +56,7 @@ class Node(models.Model):
                                on_delete=models.CASCADE, blank=True, null=True)
     node_end = models.BooleanField("Nó fim (Folha)?", default=False)
     node_start = models.BooleanField("Nó inicio", default=False)
+    evaluated = models.BooleanField("Esse nó é avaliado?", default=True)
 
     def __str__(self):
         return str(self.name) + "-"+str(self.get_activities())

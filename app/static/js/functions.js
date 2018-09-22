@@ -1,4 +1,4 @@
-var color_blind, start_ager, end_ager, sex_m, sex_f,
+var start_ager, end_ager, sex_m, sex_f,
     not_married, married, public, particular, params_filter = "";
 
 /**
@@ -6,7 +6,7 @@ var color_blind, start_ager, end_ager, sex_m, sex_f,
  * params_filter = variavel que carregar os valores de filtros para serem inseridos na url
  */
 function set_filter_params() {
-    color_blind = d3.select("#color_blind").property("checked");
+
     d3.select("#sex_f").property("checked") ? sex_f = "F" : sex_f = "";
     d3.select("#sex_m").property("checked") ? sex_m = "M" : sex_m = "";
     d3.select("#not_married").property("checked") ? not_married = "S" : not_married = "";
@@ -20,7 +20,7 @@ function set_filter_params() {
         start_ager = null;
         end_ager = null;
     }
-    params_filter = "?color_blind=" + color_blind + "&" + "start_ager=" + start_ager + "&" + "end_ager=" + end_ager + "&" + "sex_m=" + sex_m +
+    params_filter = "?start_ager=" + start_ager + "&" + "end_ager=" + end_ager + "&" + "sex_m=" + sex_m +
         "&" + "sex_f=" + sex_f + "&" + "not_married=" + not_married + "&" + "married=" + married + "&" + "public=" + public + "&" + "particular=" + particular
 
     init_get_json(params_filter);
@@ -58,7 +58,6 @@ function get_params_filter() {
  */
 function set_field_default() {
     params_filter = "";
-    d3.select("#color_blind").property("checked", false);
     d3.select("#sex_f").property("checked", true);
     d3.select("#sex_m").property("checked", true);
     d3.select("#not_married").property("checked", true);
