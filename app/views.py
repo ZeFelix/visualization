@@ -92,7 +92,6 @@ class NodeDetail(APIView):
                 sex=sex_m), Q(school_origin=public) | Q(school_origin=particular),
                 Q(civil_status=married) | Q(civil_status=not_married), ager__range=(start_ager, end_ager))
         except Exception as a:
-            print(a)
             students = node.students.all()
         if students.count():
             # só adciona um nó se o mesmo tiver algum aluno
