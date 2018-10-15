@@ -1,5 +1,8 @@
 from django.contrib import admin
+
 from app.models import *
+
+
 # Register your models here.
 
 class StudentInformationsInline(admin.TabularInline):  
@@ -18,3 +21,4 @@ admin.site.register(Student,StudentAdmin)
 admin.site.register(Activity)
 admin.site.register(Node,NodesAdmin)
 admin.site.register(Course)
+admin.site.register(Teacher)

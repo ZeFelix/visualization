@@ -4,6 +4,10 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.db.models import Avg
 from django.db.models import Q
+from django.contrib.auth import authenticate
+from django.http import HttpResponseRedirect
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 
 from app.models import Classes, Node, Student, StudentInformations
 from app.serializer import ActivitySerializer, ClassesSerialzer, \
@@ -130,6 +134,31 @@ class StudentDetail(APIView):
         serializer = StudentSerializer(students, many=True)
         return Response(serializer.data)
 
-
+@login_required(login_url = "/api/login")
 def index(request, template_name="index.html"):
     return render(request, template_name)
+
+def login_user(request, template_name="login.html"):
+    nex = request.GET.get("next", "/api")
+    if request.user.is_authenticated:
+        return HttpResponseRedirect('/api')
+    else:
+        if request.method == "POST":
+            username = request.POST["username"]
+            password = request.POST["password"]
+            user = authenticate(request,username=username, password=password)
+            print(user)
+            if user is not None:
+                if user.is_active:
+                    print("aki")
+                    login(request, user)
+                    print("oi")
+                    return HttpResponseRedirect(nex)
+                return HttpResponseRedirect("/api/login")
+            else:
+                return HttpResponseRedirect("/api/login")
+        return render(request, template_name, {"redirect_to": nex})
+
+def logout_user(request):
+    logout(request)
+    return HttpResponseRedirect("/api/login")

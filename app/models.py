@@ -1,5 +1,6 @@
 from django.db import models
 from rest_framework.filters import OrderingFilter
+from django.contrib.auth.models import User
 
 
 # Create your models here.
@@ -12,6 +13,13 @@ class Classes(models.Model):
     def __str__(self):
         return self.name
 
+class Teacher(User):
+
+    classe = models.ManyToManyField('Classes')
+
+    class Meta:
+        verbose_name = "Professor"
+        verbose_name_plural = "Professores"
 
 class Student(models.Model):
     SEX_CHOICES = (

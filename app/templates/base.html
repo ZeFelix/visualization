@@ -13,6 +13,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js" integrity="sha256-dsOXGNHAo/syFnazt+KTBsCQeRmlcW1XKL0bCK4Baec="
         crossorigin="anonymous"></script>
 
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
     <link href="{% static 'css/style.css' %}" type="text/css" rel="stylesheet">
     <link href="{% static 'css/table.css' %}" type="text/css" rel="stylesheet">
     <link href="{% static 'css/materialize.css' %}" type="text/css" rel="stylesheet">
@@ -25,20 +27,27 @@
 </head>
 
 <body>
-    <!-- NAVBAR -->
-    <header>
-        <nav>
-            <div class="nav-wrapper center">
-                <h2>
-                    Data Visualization
-                </h2>
-            </div>
-        </nav>
-    </header>
+    <!-- Dropdown Structure -->
+    <ul id="dropdown1" class="dropdown-content">
+        <li><a href="#!">one</a></li>
+        <li><a href="#!">two</a></li>
+        <li class="divider"></li>
+        <li><a href="#!">three</a></li>
+    </ul>
+    <nav>
+        <div class="nav-wrapper">
+            <a href="#!" class="brand-logo center">Data Visualization</a>
+            {% if request.user.is_authenticated %}        
+            <ul class="right hide-on-med-and-down">
+                <li><a href="{% url 'logout' %}"> <i class="material-icons">exit_to_app</i></a></li>
+            </ul>
+            {% endif %}
+        </div>
+    </nav>
 
 
 
-
+    {% if request.user.is_authenticated %}
     <ul id="nav-mobile" class="sidenav sidenav-fixed" style="transform: translateX(0px);">
 
         <li><br>
@@ -104,6 +113,7 @@
             <a class="waves-effect waves-light btn-small col s4 red" onclick="clear_filter_params()">Limpar</a>
         </li>
     </ul>
+    {% endif %}
 
     <main>
         <div class="container" id="container_visualization">
@@ -113,10 +123,7 @@
     </main>
 
 
-
-
-    <script type="text/javascript" src="{% static 'js/main.js' %}"></script>
-    <script type="text/javascript" src="{% static 'js/functions.js' %}"></script>
+    {%block footer %} {% endblock footer %}
     <script type="text/javascript" src="{% static 'js/materialize.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/materialize.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/tntvis_tooltip.min.js' %}"></script>
