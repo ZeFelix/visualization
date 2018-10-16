@@ -1,17 +1,16 @@
-from astroid import objects
 from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.db.models import Avg
 from django.db.models import Q
 from django.contrib.auth import authenticate
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 
 from app.models import Classes, Node, Student, StudentInformations
 from app.serializer import ActivitySerializer, ClassesSerialzer, \
-    NodeSerializer, StudentSerializer
+    NodeSerializer, StudentSerializer, StudentInformationsSerializer
 
 
 # Create your views here.
@@ -101,7 +100,8 @@ class NodeDetail(APIView):
             # só adciona um nó se o mesmo tiver algum aluno
             students_serializer = StudentSerializer(
                 students, many=True)
-            data_students = students_serializer.data
+            student_informations = StudentInformations.objects.filter(student__in=students,node=node)
+            student_informations_serializer = StudentInformationsSerializer(student_informations,many=True)
             node_formatation = {
                 "node_name": node.name,
                 "node_id": node.id,
@@ -109,7 +109,8 @@ class NodeDetail(APIView):
                 "node_end": node.node_end,
                 "node_evaluated": node.evaluated,
                 "name": node.activity.first().name,
-                "students": students_serializer.data
+                "students": students_serializer.data,
+                "student_informations": student_informations_serializer.data              
             }
         elif node.students.count():
             # se não tiver aluno após o filtro
@@ -119,7 +120,8 @@ class NodeDetail(APIView):
                 "node_id": node.id,
                 "node_avg": -1,
                 "name": node.activity.first().name,
-                "students": []
+                "students": [],
+                "student_informations": []
             }
         return node_formatation
 
@@ -139,6 +141,9 @@ def index(request, template_name="index.html"):
     return render(request, template_name)
 
 def login_user(request, template_name="login.html"):
+    """
+    Método para realizar login
+    """
     nex = request.GET.get("next", "/api")
     if request.user.is_authenticated:
         return HttpResponseRedirect('/api')
@@ -147,12 +152,9 @@ def login_user(request, template_name="login.html"):
             username = request.POST["username"]
             password = request.POST["password"]
             user = authenticate(request,username=username, password=password)
-            print(user)
             if user is not None:
                 if user.is_active:
-                    print("aki")
                     login(request, user)
-                    print("oi")
                     return HttpResponseRedirect(nex)
                 return HttpResponseRedirect("/api/login")
             else:
@@ -160,5 +162,40 @@ def login_user(request, template_name="login.html"):
         return render(request, template_name, {"redirect_to": nex})
 
 def logout_user(request):
+    """
+    Método para realizar logout
+    """
     logout(request)
     return HttpResponseRedirect("/api/login")
+
+@login_required
+def gantt(request, template_name="graph_gantt.html"):
+    return render(request, template_name)
+
+@login_required
+def gantt_detail(request, student_id=0):
+    """
+    Método que monsta o grafico do tempo do estudante em relação a suas atividades
+    formato da informação = [
+        id do nó, nome da atividade,resource da atividade, data de inicio da atividade pelo estudante , data fim,
+        duração da atividade, porcentagem completada, dependencias
+    ]
+    """
+    response = []
+    student = Student.objects.get(pk=student_id)
+    nodes = Node.objects.filter(students=student)
+    for node in nodes:
+        student_informations = StudentInformations.objects.filter(student=student,node=node).first()
+        information_format = [
+            str(node.id), node.activity.first().name,None,str(student_informations.start_activity),str(student_informations.end_activity),
+            None,node.percentage_completed,None
+        ]
+        response.append(
+            information_format
+        )
+    
+    context = {
+        "context":response
+    }
+    print(context)
+    return JsonResponse(context)

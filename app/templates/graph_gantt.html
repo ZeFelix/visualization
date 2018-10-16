@@ -1,0 +1,10 @@
+{% extends "base.html" %} 
+{% load static %} 
+{% block content %}
+<br>
+<div id="chart_div"></div>
+{% endblock content %}
+{% block footer %}
+    <script type="text/javascript" src="{% static 'js/loader.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/google_graph_gantt.js' %}"></script>
+{% endblock footer %}

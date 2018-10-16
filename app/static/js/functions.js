@@ -113,18 +113,21 @@ function tabulate(data, columns) {
  * Função para gerar tooltip com tabela de informações
  */
 function tooltip_tablle(data) {
-
     var obj = {};
     obj.header = data.name;
     obj.rows = [];
     obj.rows.push({
         "label": "Name",
-        "value": ""
+        "value": "Notas"
     });
     data.students.forEach(function (student) {
-        obj.rows.push({
-            "label": student.name,
-            "value": "1"
+        data.student_informations.forEach(element => {
+            if (element.student == student.pk) {
+                obj.rows.push({
+                    "label": student.name,
+                    "value": element.notes
+                });
+            }
         });
     });
     var svg = d3.select("svg")[0][0];
