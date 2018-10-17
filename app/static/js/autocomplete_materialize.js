@@ -1,18 +1,17 @@
 /**
- * node_id e student_id
+ * teacher_id
  */
-d3.json('/api/gantt/1/1', function (err, data) {
-    console.log(data)
-    create_graph(data.context)
+d3.json('/api/gantt/teacher/1', function (err, data) {
+    generator_autocomplete(data.students)
 });
 
 function generator_autocomplete(data) {
+    console.log(data)
+    var dict = {};
+    data.forEach(element => {
+        dict["Matrucula: "+element.pk + ", "+element.name] = null
+    });
     $('input.autocomplete').autocomplete({
-        data : data,
-        // data: {
-        //     "Apple": null,
-        //     "Microsoft": null,
-        //     "Google": 'https://placehold.it/250x250'
-        // },
+        data : dict,
     });
 }

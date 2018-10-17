@@ -1,7 +1,18 @@
-d3.json('/api/gantt/1', function (err, data) {
-    console.log(data)
-    create_graph(data.context)
-});
+/**
+ * Gera o gráfico de gantt daquele estudante
+ * Get o valor do input para buscar o id (matricura) do estudante e realiza requisição
+ */
+function search_informations_student() {
+    var input_text = d3.select("#autocomplete-input").property("value");
+    if (input_text != "") {
+        var student_id = get_id_input_text(input_text);
+        console.log("id:"+student_id);
+        d3.json('/api/gantt/'+student_id, function (err, data) {
+            console.log(data.context)
+            create_graph(data.context)
+        });
+    }
+}
 
 function create_graph(rows) {
     google.charts.load('current', { 'packages': ['gantt'] });
@@ -33,14 +44,14 @@ function create_graph(rows) {
                         element[index]
                     );
                 }
-            } 
+            }
             rows_aux.push(array);
         });
         data.addRows(rows_aux);
 
         var options = {
             height: 400,
-            width : 1000,
+            width: 1000,
             gantt: {
                 trackHeight: 30
             }
@@ -53,10 +64,14 @@ function create_graph(rows) {
          * Função que pega a informação do id quando clicado no gráfico
          */
         function myPageEventHandler() {
-            console.log(data.getValue(chart.getSelection()[0].row,0));
             create_table();
         }
 
         chart.draw(data, options);
     }
+}
+
+function get_id_input_text(text){
+    var text_array = text.split(" ");
+    return text_array[1].replace(",","");
 }

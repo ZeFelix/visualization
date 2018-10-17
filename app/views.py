@@ -9,7 +9,8 @@ from rest_framework.views import APIView
 
 from app.models import Classes, Node, Student, StudentInformations, Teacher
 from app.serializer import ActivitySerializer, ClassesSerialzer, \
-    NodeSerializer, StudentInformationsSerializer, StudentSerializer, TeacherSerializer
+    NodeSerializer, StudentInformationsSerializer, StudentSerializer, \
+    TeacherSerializer
 
 
 # Create your views here.
@@ -220,5 +221,11 @@ class TeacherDetail(APIView):
     def get(self,request,teacher_id):
         response = {}
         teacher = Teacher.objects.get(pk=teacher_id)
-        teacher_serializer = TeacherSerializer(teacher, many=True)
-        return Response(teacher_serializer.data)
+        teacher_serializer = TeacherSerializer(teacher)
+        students = Student.objects.filter(classe__in=teacher.classe.all())
+        student_serializer = StudentSerializer(students, many=True)
+        response = {
+            "teacher" : teacher_serializer.data,
+            "students" : student_serializer.data
+        }
+        return Response(response)
