@@ -75,8 +75,6 @@ class Node(models.Model):
                                on_delete=models.CASCADE, blank=True, null=True)
     node_end = models.BooleanField("Nó fim (Folha)?", default=False)
     node_start = models.BooleanField("Nó inicio", default=False)
-    percentage_completed = models.IntegerField(
-        "Porcentagem concluida", default=0)
     evaluated = models.BooleanField("Esse nó é avaliado?", default=True)
 
     def __str__(self):
@@ -95,6 +93,9 @@ class StudentInformations(models.Model):
         "Nota do Aluno", max_digits=4, decimal_places=2, blank=True, null=True)
     start_activity = models.DateField("Iniciou a atividade", auto_now=False, auto_now_add=False, blank=True, null=True)
     end_activity = models.DateField("Iniciou a atividade", auto_now=False, auto_now_add=False, blank=True, null=True)
+    amount_access = models.IntegerField("quantidade de acesso",default=0)
+    percentage_completed = models.IntegerField(
+        "Porcentagem concluida", default=0)
 
 
 class Course(models.Model):

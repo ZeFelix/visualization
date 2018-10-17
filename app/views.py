@@ -1,16 +1,15 @@
-from django.shortcuts import render
-from rest_framework.response import Response
-from rest_framework.views import APIView
-from django.db.models import Avg
-from django.db.models import Q
-from django.contrib.auth import authenticate
-from django.http import HttpResponseRedirect, JsonResponse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.db.models import Avg, Q
+from django.http import HttpResponseRedirect, JsonResponse
+from django.shortcuts import render
+from rest_framework import request
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
-from app.models import Classes, Node, Student, StudentInformations
+from app.models import Classes, Node, Student, StudentInformations, Teacher
 from app.serializer import ActivitySerializer, ClassesSerialzer, \
-    NodeSerializer, StudentSerializer, StudentInformationsSerializer
+    NodeSerializer, StudentInformationsSerializer, StudentSerializer, TeacherSerializer
 
 
 # Create your views here.
@@ -129,6 +128,9 @@ class NodeDetail(APIView):
 class StudentDetail(APIView):
 
     def get(self, request, node_id):
+        """
+        Retorna todos os estudantes daquele nó
+        """
         nodes = Node.objects.filter(pk=node_id)
         students = []
         for node in nodes:
@@ -188,7 +190,7 @@ def gantt_detail(request, student_id=0):
         student_informations = StudentInformations.objects.filter(student=student,node=node).first()
         information_format = [
             str(node.id), node.activity.first().name,None,str(student_informations.start_activity),str(student_informations.end_activity),
-            None,node.percentage_completed,None
+            None,student_informations.percentage_completed,None
         ]
         response.append(
             information_format
@@ -199,3 +201,24 @@ def gantt_detail(request, student_id=0):
     }
     print(context)
     return JsonResponse(context)
+
+class StudentInformationsDetail(APIView):
+    """
+    Retorna as informações de execução de atividade do aluno
+    """
+
+    def get(self,request,node_id,student_id):
+        student_informations = StudentInformations.objects.filter(node__pk=node_id,student__pk=student_id)
+        serializer = StudentInformationsSerializer(student_informations,many=True)
+        return Response(serializer.data)
+
+
+class TeacherDetail(APIView):
+    """
+    Retorna todas as informações do professor
+    """
+    def get(self,request,teacher_id):
+        response = {}
+        teacher = Teacher.objects.get(pk=teacher_id)
+        teacher_serializer = TeacherSerializer(teacher, many=True)
+        return Response(teacher_serializer.data)

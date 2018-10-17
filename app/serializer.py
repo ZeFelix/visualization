@@ -5,7 +5,7 @@ class StudentInformationsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = StudentInformations
-        fields = ["pk","notes","node","student"]
+        fields = ["pk","notes","node","student",'start_activity','end_activity',"amount_access",'percentage_completed']
 
 class ClassesSerialzer(serializers.ModelSerializer):
     class Meta:
@@ -33,4 +33,9 @@ class CourseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Course
         fields = ["pk","name","course"]
+
+class TeacherSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Teacher
+        fields = "__all__"
     
