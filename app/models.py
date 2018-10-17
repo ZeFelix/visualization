@@ -14,14 +14,17 @@ class Classes(models.Model):
     def __str__(self):
         return self.name
 
-
-class Teacher(User):
-
+class Teacher(models.Model):
+    
     classe = models.ManyToManyField('Classes')
+    user = models.OneToOneField(User, verbose_name="Usuário professor", on_delete=models.CASCADE)
 
     class Meta:
         verbose_name = "Professor"
         verbose_name_plural = "Professores"
+    
+    def __str__(self):
+        return self.user.first_name
 
 
 class Student(models.Model):
