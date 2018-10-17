@@ -209,9 +209,16 @@ class StudentInformationsDetail(APIView):
     """
 
     def get(self,request,node_id,student_id):
-        student_informations = StudentInformations.objects.filter(node__pk=node_id,student__pk=student_id)
-        serializer = StudentInformationsSerializer(student_informations,many=True)
-        return Response(serializer.data)
+        student_informations = StudentInformations.objects.filter(node__pk=node_id,student__pk=student_id).first()
+        serializer = StudentInformationsSerializer(student_informations)
+        student_serializer = StudentSerializer(Student.objects.get(pk=student_id))
+        node_serializer = NodeSerializer(Node.objects.get(pk=node_id))
+        context = {
+            "student" : student_serializer.data,
+            "node" : node_serializer.data,
+            "student_informations" :serializer.data
+        }
+        return Response(context)
 
 
 class TeacherDetail(APIView):

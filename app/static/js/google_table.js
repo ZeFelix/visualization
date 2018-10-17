@@ -1,19 +1,31 @@
-function create_table() {
+/**
+ * 
+ * recebe o id do nó para gerar a tabela com informação do estudante na atividade do nó
+ * url: api/gantt / <int: node_id>/<int: student_id></int>
+ */
+function create_table(node_id) {
+    console.log("create table: node id");
+    console.log(node_id);
+    d3.json('/api/gantt/'+node_id+"/1", function (err, data) {
+        console.log("retorno das informações da atividade do nó")
+        console.log(data)
+        generator_table(data);
+    });
+}
+
+function generator_table(params) {
+    console.log("gerar tabela");
     google.charts.load('current', { 'packages': ['table'] });
     google.charts.setOnLoadCallback(drawTable);
 
     function drawTable() {
         var data = new google.visualization.DataTable();
         data.addColumn('string', 'Name');
-        data.addColumn('number', 'Salary');
-        data.addColumn('boolean', 'Full Time Employee');
-        data.addColumn('boolean', 'Full Time Employee');
+        data.addColumn('string', 'Note');
+        data.addColumn('number', 'Amount Access');
+        console.log(params);
         data.addRows([
-            ['Mike', { v: 10000, f: '$10,000' }, true,true],
-            ['Jim', { v: 8000, f: '$8,000' }, false,true],
-            ['Alice', { v: 12500, f: '$12,500' }, true,false],
-            ['Bob', { v: 7000, f: '$7,000' }, true,true],
-            ['Mike', { v: 10000, f: '$10,000' }, true,false],
+            [params.student.name, params.student_informations.notes, params.student_informations.amount_access],
         ]);
 
         var table = new google.visualization.Table(document.getElementById('table_div'));

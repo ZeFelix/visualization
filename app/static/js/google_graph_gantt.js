@@ -11,6 +11,8 @@ function search_informations_student() {
             console.log(data.context)
             create_graph(data.context)
         });
+    }else{
+        alert("Atenção digite o nome da Aluno!");
     }
 }
 
@@ -50,7 +52,6 @@ function create_graph(rows) {
         data.addRows(rows_aux);
 
         var options = {
-            height: 400,
             width: 1000,
             gantt: {
                 trackHeight: 30
@@ -64,7 +65,7 @@ function create_graph(rows) {
          * Função que pega a informação do id quando clicado no gráfico
          */
         function myPageEventHandler() {
-            create_table();
+            create_table(data.getValue(chart.getSelection()[0].row,0));
         }
 
         chart.draw(data, options);
