@@ -41,14 +41,20 @@
             {% if request.user.is_authenticated %}
             <div class="navbar-fixed">
                 <nav class="navbar white">
-                    <div class="nav-wrapper"><a href="/api" class="brand-logo grey-text text-darken-4">Home</a>
-                        <ul id="nav-mobile" class="right">
-                            {% if request.user.is_authenticated %}
-                            <ul class="right hide-on-med-and-down">
-                                <li><a href="{% url 'logout' %}"> <i class="material-icons">exit_to_app</i></a></li>
-                            </ul>
-                            {% endif %}
-                        </ul><a href="#!" data-target="sidenav-left" class="sidenav-trigger left"><i class="material-icons black-text">menu</i></a>
+                    <div class="nav-wrapper row">
+                        <div class="col s1"><a href="/api" class="brand-logo grey-text text-darken-4">Home</a></div>
+                        <div class="col s2"><a href="#!" onclick="init_get_json()" class="brand-logo grey-text text-darken-4">Visualizar Design</a></div>
+                        <div class=" col s8">
+                            <ul id="nav-mobile" class="right">
+                                {% if request.user.is_authenticated %}
+                                <ul class="right hide-on-med-and-down">
+                                    <li><a href="{% url 'logout' %}"> <i class="material-icons">exit_to_app</i></a></li>
+                                </ul>
+                                {% endif %}
+                        </div>
+                        {% if request.user.is_authenticated %}
+                            </ul><a href="#!" data-target="sidenav-left" class="sidenav-trigger left"><i class="material-icons black-text">menu</i></a>
+                        {% endif %}
                     </div>
                 </nav>
             </div>
@@ -124,7 +130,19 @@
                             <div class="collapsible-body ">
                                 <ul>
                                     <li>
-                                        <a href="{% url 'gantt' %}" class="">Gráfico gantt<i class="material-icons">exit_to_app</i></a>
+                                        <a href="{% url 'gantt' %}" class="">Gráfico gantt<i class="material-icons">equalizer</i></a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li class="bold  "><a class="collapsible-header">Consultas<i class="material-icons chevron">chevron_left</i></a>
+                            <div class="collapsible-body ">
+                                <ul>
+                                    <li>
+                                        <a href="{% url 'gantt' %}" class="">Melhor Caminho<i class="material-icons">call_merge</i></a>
+                                    </li>
+                                    <li>
+                                        <a href="{% url 'gantt' %}" class="">Pior Caminho<i class="material-icons">call_split</i></a>
                                     </li>
                                 </ul>
                             </div>
@@ -164,9 +182,7 @@
                 $('.collapsible').collapsible();
 
             });
-        </script>
-
-            {%block footer %} {% endblock footer %}
+        </script> {%block footer %} {% endblock footer %}
 
     </body>
 

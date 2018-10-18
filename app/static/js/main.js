@@ -27,8 +27,6 @@ var svg = d3.select("#container_visualization").append("svg")
     .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-init_get_json()
-
 function init_get_json(params_filter = "") {
     d3.json("/api/all" + params_filter, function (data) {
         root = {
