@@ -16,12 +16,8 @@
     stroke-width: 20px;
 }
 
-header, main, footer {
-    padding-left: 150px;
-}
-
-#nav-mobile {
-    padding-left: 30px;
+.padding-sider {
+    padding-left: 15px;
 }
 
 body {
@@ -51,4 +47,9 @@ body {
 .input-field input[type=password]:focus {
     border-bottom: 2px solid #e91e63;
     box-shadow: none;
+}
+
+::placeholder {
+    color: black !important;
+    opacity: 0.5 !important;
 }
