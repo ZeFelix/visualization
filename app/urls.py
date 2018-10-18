@@ -14,5 +14,5 @@ urlpatterns = [
     path("gantt",gantt, name='gantt'),
     path("gantt/<int:student_id>",gantt_detail, name='gantt_detail'),
     path("gantt/<int:node_id>/<int:student_id>",StudentInformationsDetail.as_view(), name='student_informations'),
-    path("gantt/teacher/<int:teacher_id>",TeacherDetail.as_view(), name='teacher')
+    path("gantt/teacher/<int:user_teacher_id>",TeacherDetail.as_view(), name='teacher')
 ]

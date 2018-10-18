@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Avg, Q
 from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
+from django.template.defaultfilters import first
 from rest_framework import request
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -225,9 +226,9 @@ class TeacherDetail(APIView):
     """
     Retorna todas as informações do professor
     """
-    def get(self,request,teacher_id):
+    def get(self,request,user_teacher_id):
         response = {}
-        teacher = Teacher.objects.get(pk=teacher_id)
+        teacher = Teacher.objects.filter(user=user_teacher_id).first()
         teacher_serializer = TeacherSerializer(teacher)
         students = Student.objects.filter(classe__in=teacher.classe.all())
         student_serializer = StudentSerializer(students, many=True)

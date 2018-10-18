@@ -27,138 +27,160 @@
     <link href="{% static 'css/materialize.css' %}" type="text/css" rel="stylesheet">
     <link href="{% static 'css/materialize.min.css' %}" type="text/css" rel="stylesheet">
     <link href="{% static 'css/tntvis_tooltip.css' %}" type="text/css" rel="stylesheet">
-    
+
 
 </head>
+{% if request.user.is_authenticated %}
 
 <body class="has-fixed-sidenav">
-    <header>
-        <div class="navbar-fixed">
-            <nav class="navbar white">
-                <div class="nav-wrapper"><a href="#!" class="brand-logo grey-text text-darken-4">Home</a>
-                    <ul id="nav-mobile" class="right">
-                        <li class="hide-on-med-and-down"><a href="/products/admin">Buy Now!</a></li>
-                        <li class="hide-on-med-and-down"><a href="#!" data-target="dropdown1" class="dropdown-trigger waves-effect"><i
-                                    class="material-icons">notifications</i></a></li>
-                        <li><a href="#!" data-target="chat-dropdown" class="dropdown-trigger waves-effect"><i class="material-icons">settings</i></a></li>
-                    </ul><a href="#!" data-target="sidenav-left" class="sidenav-trigger left"><i class="material-icons black-text">menu</i></a>
-                </div>
-            </nav>
-        </div>
-        <ul id="sidenav-left" class="sidenav sidenav-fixed grey lighten-2">
-            <li class="grey darken-1"><a href="/pages/admin-dashboard" class="logo-container">Admin<i class="material-icons left">spa</i></a></li>
-            <li class="no-padding">
-                <ul class="collapsible collapsible-accordion">
-                    <li class="bold waves-effect active"><a class="collapsible-header">Filtros<i class="material-icons chevron">chevron_left</i></a>
-                        <div class="collapsible-body ">
-                            <ul>
-                                <li>
-                                    <label class="padding-sider">
-                                        <input type="checkbox" id="color_blind" />
-                                        <span>Usuário Daltônicos</span>
-                                    </label>
-                                </li>
-                                <li>
-                                    <label class="padding-sider">
-                                        <input type="checkbox" id="ager" onclick="ager_checked_click()" />
-                                        <span>Faixa etária:</span>
-                                    </label>
-                                    <label class="col s5 padding-sider" >
-                                        <input placeholder="De" id="start_ager" type="text" class="active validate" required disabled/>
-                                    </label>
-                                    <label class="col s5 padding-sider">
-                                        <input placeholder="Até" id="end_ager" type="text" class="active validate" required disabled/>
-                                    </label>
-                                </li>
-                                <li style="padding-left:15px" >
-                                    Sexo:
-                                    <label>
-                                        <input type="checkbox" id="sex_m" checked />
-                                        <span>Masculino</span>
-                                    </label>
-                                    <label>
-                                        <input type="checkbox" id="sex_f" checked />
-                                        <span>Feminino</span>
-                                    </label>
-                                </li>
-                                <li style="padding-left:15px">
-                                    Estado Civil:
-                                    <label>
-                                        <input type="checkbox" id="not_married" checked /> Solteiro
-                                    </label>
-                                    <label>
-                                        <input type="checkbox" id="married" checked />
-                                        <span>Casado</span>
-                                    </label>
-                                </li>
-                                <li style="padding-left:15px">
-                                    Escola:
-                                    <label>
-                                        <input type="checkbox" id="public" checked />
-                                        <span>Pública</span>
-                                    </label>
-                                    <label>
-                                        <input type="checkbox" id="particular" checked />
-                                        <span>Particular</span>
-                                    </label>
-                                </li>
-                                <li>
-                                    <a class="waves-effect waves-light btn-small green " onclick="set_filter_params()">Ok</a>
-                                </li>
-                                <li>
-                                    <a class="waves-effect waves-light btn-small  red" onclick="clear_filter_params()">Limpar</a>
-                                </li>
+    {% else %}
+
+    <body>
+        {% endif %}
+        <header>
+            {% if request.user.is_authenticated %}
+            <div class="navbar-fixed">
+                <nav class="navbar white">
+                    <div class="nav-wrapper"><a href="#!" class="brand-logo grey-text text-darken-4">Home</a>
+                        <ul id="nav-mobile" class="right">
+                            {% if request.user.is_authenticated %}
+                            <ul class="right hide-on-med-and-down">
+                                <li><a href="{% url 'logout' %}"> <i class="material-icons">exit_to_app</i></a></li>
                             </ul>
+                            {% endif %}
+                        </ul><a href="#!" data-target="sidenav-left" class="sidenav-trigger left"><i class="material-icons black-text">menu</i></a>
+                    </div>
+                </nav>
+            </div>
+
+            <ul id="sidenav-left" class="sidenav sidenav-fixed grey lighten-2">
+                <li class="grey darken-1"><a href="#!" class="logo-container">{{request.user.first_name}}<i class="material-icons left">spa</i></a></li>
+                <input id="user_teacher_id" type="hidden" value="{{request.user.id}}">
+                <li class="no-padding">
+                    <ul class="collapsible collapsible-accordion">
+                        <li class="bold waves-effect "><a class="collapsible-header">Filtros<i class="material-icons chevron">chevron_left</i></a>
+                            <div class="collapsible-body ">
+                                <ul>
+                                    <li>
+                                        <label class="padding-sider">
+                                            <input type="checkbox" id="color_blind" />
+                                            <span>Usuário Daltônicos</span>
+                                        </label>
+                                    </li>
+                                    <li>
+                                        <label class="padding-sider">
+                                            <input type="checkbox" id="ager" onclick="ager_checked_click()" />
+                                            <span>Faixa etária:</span>
+                                        </label>
+                                        <label class="col s5 padding-sider">
+                                            <input placeholder="De" id="start_ager" type="text" class="active validate" required disabled/>
+                                        </label>
+                                        <label class="col s5 padding-sider">
+                                            <input placeholder="Até" id="end_ager" type="text" class="active validate" required disabled/>
+                                        </label>
+                                    </li>
+                                    <li style="padding-left:15px">
+                                        Sexo:
+                                        <label>
+                                            <input type="checkbox" id="sex_m" checked />
+                                            <span>Masculino</span>
+                                        </label>
+                                        <label>
+                                            <input type="checkbox" id="sex_f" checked />
+                                            <span>Feminino</span>
+                                        </label>
+                                    </li>
+                                    <li style="padding-left:15px">
+                                        Estado Civil:
+                                        <label>
+                                            <input type="checkbox" id="not_married" checked /> Solteiro
+                                        </label>
+                                        <label>
+                                            <input type="checkbox" id="married" checked />
+                                            <span>Casado</span>
+                                        </label>
+                                    </li>
+                                    <li style="padding-left:15px">
+                                        Escola:
+                                        <label>
+                                            <input type="checkbox" id="public" checked />
+                                            <span>Pública</span>
+                                        </label>
+                                        <label>
+                                            <input type="checkbox" id="particular" checked />
+                                            <span>Particular</span>
+                                        </label>
+                                    </li>
+                                    <li>
+                                        <a class="waves-effect waves-light btn-small green " onclick="set_filter_params()">Ok</a>
+                                    </li>
+                                    <li>
+                                        <a class="waves-effect waves-light btn-small  red" onclick="clear_filter_params()">Limpar</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li class="bold waves-effect "><a class="collapsible-header">Detalhes<i class="material-icons chevron">chevron_left</i></a>
+                            <div class="collapsible-body ">
+                                <ul>
+                                    <li>
+                                        <a href="{% url 'gantt' %}" class="waves-effect">Gráfico gantt<i class="material-icons">exit_to_app</i></a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                    {% else %}
+                    <nav>
+                        <div class="nav-wrapper">
+                            <a href="#!" class="brand-logo center">Data Visualization</a>
                         </div>
-                    </li>
-                </ul>
-            </li>
-        </ul>
-        </div>
-    </header>
-    <main>
-        <div class="container">
-            <div class="masonry row">
-                <div class="col s12 center">
-                    <h2>Visualization</h2>
-                </div>
-                <div class="col l3 m6 s12" id="container_visualization">
-                    {% block content %} {% endblock content %}
+                    </nav>
+                    {% endif %}
+        </header>
+        <main>
+            <div class="container">
+                <div class="row ">
+                    {% if request.user.is_authenticated %}
+                    <div class="col s12 center">
+                        <h2>Visualização</h2>
+                    </div>
+                    {% endif %}
+                    <div class="col s12" id="container_visualization">
+                        {% block content %} {% endblock content %}
+                    </div>
                 </div>
             </div>
-        </div>
-    </main>
+        </main>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.19.2/moment.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.19.2/moment.min.js"></script>
 
-    <!-- External libraries -->
+        <!-- External libraries -->
 
-    <!-- jqvmap -->
-    <script type="text/javascript" src="//cdn.shopify.com/s/files/1/1775/8583/t/1/assets/jquery.vmap.min.js?701317015908805120"></script>
-    <script type="text/javascript" src="//cdn.shopify.com/s/files/1/1775/8583/t/1/assets/jquery.vmap.world.js?701317015908805120"
-        charset="utf-8"></script>
-    <script type="text/javascript" src="//cdn.shopify.com/s/files/1/1775/8583/t/1/assets/jquery.vmap.sampledata.js?701317015908805120"></script>
+        <!-- jqvmap -->
+        <script type="text/javascript" src="//cdn.shopify.com/s/files/1/1775/8583/t/1/assets/jquery.vmap.min.js?701317015908805120"></script>
+        <script type="text/javascript" src="//cdn.shopify.com/s/files/1/1775/8583/t/1/assets/jquery.vmap.world.js?701317015908805120"
+            charset="utf-8"></script>
+        <script type="text/javascript" src="//cdn.shopify.com/s/files/1/1775/8583/t/1/assets/jquery.vmap.sampledata.js?701317015908805120"></script>
 
-    <!-- ChartJS -->
-    <script type="text/javascript" src="//cdn.shopify.com/s/files/1/1775/8583/t/1/assets/Chart.js?701317015908805120"></script>
-    <script type="text/javascript" src="//cdn.shopify.com/s/files/1/1775/8583/t/1/assets/Chart.Financial.js?701317015908805120"></script>
-
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.7.0/fullcalendar.min.js"></script>
-    <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.16/datatables.min.js"></script>
-    <script src="//cdn.shopify.com/s/files/1/1775/8583/t/1/assets/imagesloaded.pkgd.min.js?701317015908805120"></script>
-    <script src="//cdn.shopify.com/s/files/1/1775/8583/t/1/assets/masonry.pkgd.min.js?701317015908805120"></script>
+        <!-- ChartJS -->
+        <script type="text/javascript" src="//cdn.shopify.com/s/files/1/1775/8583/t/1/assets/Chart.js?701317015908805120"></script>
+        <script type="text/javascript" src="//cdn.shopify.com/s/files/1/1775/8583/t/1/assets/Chart.Financial.js?701317015908805120"></script>
 
 
-    <!-- Initialization script -->
-    <script src="//cdn.shopify.com/s/files/1/1775/8583/t/1/assets/dashboard.min.js?701317015908805120"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.7.0/fullcalendar.min.js"></script>
+        <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.16/datatables.min.js"></script>
+        <script src="//cdn.shopify.com/s/files/1/1775/8583/t/1/assets/imagesloaded.pkgd.min.js?701317015908805120"></script>
+        <script src="//cdn.shopify.com/s/files/1/1775/8583/t/1/assets/masonry.pkgd.min.js?701317015908805120"></script>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js" type="text/javascript"></script>
-    <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
-    <script type="text/javascript" src="{% static 'js/tntvis_tooltip.min.js' %}"></script>
 
-    {%block footer %} {% endblock footer %}
-</body>
+        <!-- Initialization script -->
+        <script src="//cdn.shopify.com/s/files/1/1775/8583/t/1/assets/dashboard.min.js?701317015908805120"></script>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js" type="text/javascript"></script>
+        <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
+        <script type="text/javascript" src="{% static 'js/tntvis_tooltip.min.js' %}"></script> {%block footer %} {% endblock footer %}
+    </body>
 
 </html>
