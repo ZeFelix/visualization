@@ -3,6 +3,7 @@
  * Get o valor do input para buscar o id (matricura) do estudante e realiza requisição
  */
 function search_informations_student() {
+    d3.selectAll(".google-visualization-table-table").remove();
     var input_text = d3.select("#autocomplete-input").property("value");
     if (input_text != "") {
         var student_id = get_id_input_text(input_text);
