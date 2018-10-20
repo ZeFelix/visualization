@@ -181,5 +181,17 @@ function calc_way() {
        spinner.attr("class", spinner_class);
        init_get_json();
     });
+}
 
+
+function checkbox_changed(id) {
+    console.log("checked")
+    console.log(id)
+    var classe_id = $(".classe_id").toArray();
+    classe_id.forEach(element => {
+        if (element.id != id) {
+            element.checked = false;
+        }
+    });
+    init_get_json();
 }

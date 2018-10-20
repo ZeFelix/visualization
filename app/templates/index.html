@@ -4,7 +4,7 @@
     {% for classe in classes %}
     <li style="padding-left:15px">
         <label>
-            <input onclick="" type="checkbox" id="not_married" class="classe_id" value="{{classe.id}}" />
+            <input onclick="checkbox_changed({{classe.id}})" type="checkbox" id="{{classe.id}}" class="classe_id" value="{{classe.id}}" />
             <span class="black-text">{{classe.name}}</span>
         <label>
     </li>
