@@ -2,11 +2,11 @@
 {% load static %} 
 {% block li_classe %}
     {% for classe in classes %}
-    <li>
+    <li style="padding-left:15px">
         <label>
-            <input name="group1" type="radio" class="classe_id" value="{{classe.id}}"/>
+            <input onclick="" type="checkbox" id="not_married" class="classe_id" value="{{classe.id}}" />
             <span class="black-text">{{classe.name}}</span>
-        </label>
+        <label>
     </li>
     {% endfor %}
 {% endblock li_classe %}

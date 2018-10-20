@@ -13,15 +13,13 @@ var tree = d3.layout.tree()
 var diagonal = d3.svg.diagonal()
     .projection(function (d) { return [d.y, d.x]; });
 
-var global_classe_id;
-
 // Colors as an array
 // https://github.com/mbostock/d3/wiki/Ordinal-Scales#category20
 // cores tag = [nó fim - caminho sem alunos(filtro) - nota 0 - nota 5 - nota 10]
 // sequencia das cores = [preto,roxo, cinza, vermelho, amarelo, verde]
-var colors = d3.scale.linear().domain([-3,-2, -1, 0, 5, 10]).range(["#757575","#7E57C2", "#BDBDBD", "#DD2C00", "#FFD600", "#1B5E20"]);
+var colors = d3.scale.linear().domain([-3, -2, -1, 0, 5, 10]).range(["#757575", "#7E57C2", "#BDBDBD", "#DD2C00", "#FFD600", "#1B5E20"]);
 // sequencia das cores daltonico = [roxo, cinza, vermelho(daltonico), amarelo(daltonico), verde(daltonico)]
-var color_blind = d3.scale.linear().domain([-3,-2, -1, 0, 5, 10]).range(["#757575","#7E57C2", "#BDBDBD", "#fc8d59", "#ffffbf", "#91cf60"]);
+var color_blind = d3.scale.linear().domain([-3, -2, -1, 0, 5, 10]).range(["#757575", "#7E57C2", "#BDBDBD", "#fc8d59", "#ffffbf", "#91cf60"]);
 
 var svg = d3.select("#container_visualization").append("svg")
     .attr("width", width + margin.right + margin.left)
@@ -30,9 +28,9 @@ var svg = d3.select("#container_visualization").append("svg")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 
-function init_get_json(params_filter = "") {
+function init_get_json() {
 
-    d3.json("/api/all/" + get_classe_id() +params_filter, function (data) {
+    d3.json("/api/all/" + get_classe_id(), function (data) {
         data.forEach(function (params) {
             console.log(params);
         });
@@ -94,7 +92,7 @@ function update(source) {
             console.log("nó")
             console.log(d.node_name)
             console.log(d.node_end)
-            if (d.node_end == true){
+            if (d.node_end == true) {
                 return "black";
             }
             if (d.node_evaluated == false) {
@@ -200,41 +198,14 @@ function click(d) {
             console.log("->1")
             d._children = d.children;
             d.children = null;
-            update(d);
         } else {
-            console.log("----")
-            console.log(d.classe_id)
-            var classe_id = d.classe_id;
-            global_classe_id = classe_id;
-            var params_way = get_way();
-            if (params_way == "") {
-                console.log("normal")
-                if (d._children != null) {
-                    d.children = d._children;
-                    d._children = null;
-                    d.children.forEach(expand);
-                }
-                update(d);
-            } else {
-                params_way = "?" + params_way;
-                console.log("calular" + params_way);
-                var spinner = d3.select("#spinner");
-                var spinner_class = spinner.attr("class");
-                spinner.attr("class",spinner_class+"is-active");
-                d3.json("/api/node/calcway/" + classe_id + params_way, function (data) {
-                    console.log("terminou")
-                    if (d._children != null) {
-                        d.children = d._children;
-                        d._children = null;
-                        d.children.forEach(expand);
-                    }
-                    spinner.attr("class",spinner_class);
-                    update(d);
-                });
+            if (d._children != null) {
+                d.children = d._children;
+                d._children = null;
+                d.children.forEach(expand);
             }
-
         }
-
+        update(d);
     } else {
         //código para mostrar os gráficos
         tooltip_tablle(d);
@@ -263,10 +234,13 @@ function expand(d) {
         var params_way = get_way();
         if (params_filter == "") {
             params_filter = "?" + params_filter;
-        }else{
-            params_way = "&"+params_way;
+        } else {
+            params_way = "&" + params_way;
         }
-        d3.json("/api/node/" + d.node_id +"/"+ global_classe_id + params_filter + params_way, function (data) {
+        console.log("Buscar nó:")
+        console.log(get_classe_id())
+        console.log("--")
+        d3.json("/api/node/" + d.node_id + "/" + get_classe_id() + params_filter + params_way, function (data) {
             d.children = data;
             d._children = null;
             d.children.forEach(expand);

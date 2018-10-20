@@ -278,6 +278,7 @@ def calc_way(request,classe_id):
     Método para calcular o caminho com melhor ou pior desempenho
     cálculo baseado nos nós e estudantes daquela classe
     """
+    response = True
     try:
         way = request.GET["way"]        
         signal = -1 if way == 'best_way' else 1   
@@ -318,8 +319,10 @@ def calc_way(request,classe_id):
             
             node.save()
         print("calculou")
+
     except Exception as e:
         pass
         print("não calculou")
-    
-    return JsonResponse({})
+        response = False
+
+    return JsonResponse({"context":response})

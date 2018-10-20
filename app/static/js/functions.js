@@ -158,13 +158,28 @@ function clear_way() {
 function get_classe_id() {
     var classe_id = $(".classe_id").toArray();
     var id;
-    console.log()
     classe_id.forEach(element => {
-        if(element.checked){
+        if (element.checked) {
             console.log("selecionado");
             console.log(element.value);
             id = element.value;
         }
     });
+    console.log("id selecionado")
+    console.log(id)
     return id;
+}
+
+
+function calc_way() {
+    var params_way ="?"+ get_way();
+    var spinner = d3.select("#spinner");
+    var spinner_class = spinner.attr("class");
+    spinner.attr("class", spinner_class + "is-active");
+    d3.json("/api/node/calcway/" + get_classe_id() + params_way, function (data) {
+        console.log(data);
+       spinner.attr("class", spinner_class);
+       init_get_json();
+    });
+
 }
