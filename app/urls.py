@@ -1,12 +1,13 @@
 from django.urls import path
 
 from app.views import AllList, NodeDetail, StudentDetail, gantt, gantt_detail, \
-    index, login_user, logout_user, StudentInformationsDetail, TeacherDetail
+    index, login_user, logout_user, StudentInformationsDetail, TeacherDetail, calc_way
 
 
 urlpatterns = [
     path("all",AllList.as_view()),
     path("node/<int:node_id>",NodeDetail.as_view()),
+    path("node/calcway/<int:classe_id>",calc_way, name='calc_way'),
     path("node/<int:node_id>/students",StudentDetail.as_view()),
     path("",index),
     path("login",login_user),

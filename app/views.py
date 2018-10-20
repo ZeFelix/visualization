@@ -1,3 +1,6 @@
+from signal import signal
+
+from dijkstar import Graph, find_path
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.db.models import Avg, Q
@@ -8,7 +11,8 @@ from rest_framework import request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from app.models import Classes, Node, Student, StudentInformations, Teacher
+from app.models import Classes, Course, Node, Student, StudentInformations, \
+    Teacher
 from app.serializer import ActivitySerializer, ClassesSerialzer, \
     NodeSerializer, StudentInformationsSerializer, StudentSerializer, \
     TeacherSerializer
@@ -24,8 +28,14 @@ class AllList(APIView):
     """
 
     def get(self, request):
+        user_teacher_id = request.query_params.get('user_teacher_id')
         informations = []
-        classes = Classes.objects.all()
+        if user_teacher_id == None:
+            classes = Classes.objects.all()
+        else:
+            teacher = Teacher.objects.filter(user=user_teacher_id).first()
+            classes = teacher.classe.all()
+
         serializer = ClassesSerialzer(classes, many=True)
         for classe in classes:
             students = Student.objects.filter(classe=classe).count()
@@ -61,6 +71,7 @@ class NodeDetail(APIView):
             if node:
                 data.append(self.format_node_information(node, request))
         return Response(data)
+                
 
     @classmethod
     def get_node_average(self, node, students):
@@ -81,6 +92,9 @@ class NodeDetail(APIView):
         número -1: indica a cor de um nó que n tem aluno que pertence ao filtro
         """
         node_formatation = None
+        
+        way = True if not request.query_params.get("way") == None else False
+
         try:
             start_ager = int(
                 request.GET["start_ager"]) if request.GET["start_ager"] != "null" else 0
@@ -103,10 +117,18 @@ class NodeDetail(APIView):
                 students, many=True)
             student_informations = StudentInformations.objects.filter(student__in=students,node=node)
             student_informations_serializer = StudentInformationsSerializer(student_informations,many=True)
+            if way:
+                if node.is_way:
+                    node_avg = self.get_node_average(node, students)
+                else:
+                    node_avg = -3  
+            else:
+                node_avg = self.get_node_average(node, students)
+
             node_formatation = {
                 "node_name": node.name,
                 "node_id": node.id,
-                "node_avg": self.get_node_average(node, students),
+                "node_avg": node_avg,
                 "node_end": node.node_end,
                 "node_evaluated": node.evaluated,
                 "name": node.activity.first().name,
@@ -237,3 +259,55 @@ class TeacherDetail(APIView):
             "students" : student_serializer.data
         }
         return Response(response)
+
+    
+def calc_way(request,classe_id):
+    """
+    Método para calcular o caminho com melhor ou pior desempenho
+    cálculo baseado nos nós e estudantes daquela classe
+    """
+    try:
+        way = request.GET["way"]        
+        signal = -1 if way == 'best_way' else 1   
+
+        classe = Classes.objects.first()
+        
+        graph = Graph()
+
+        nodes = Node.objects.filter(course=classe.course)
+        node_conextion = nodes.filter(end_node_conexction=True).first()
+        node_start = nodes.filter(node_start=True).first()
+        students = Student.objects.filter(classe=classe)
+        for node in nodes:
+            node_parent = node.node_parent
+            if not node.node_start and not node.end_node_conexction:
+                avg_node = NodeDetail.get_node_average(node,students)
+                if avg_node == None:
+                    avg_node = 10
+                graph.add_edge(node_parent.id,node.id,{'cost':avg_node*signal})
+                #print(str(node_parent.id)+"->"+str(node.id)+":"+str(avg_node))
+            if node.node_end:
+                """
+                Conecta todos os nós avaliação a um só nó
+                """
+                graph.add_edge(node.id,node_conextion.id,{'cost':0})
+        
+        cost_func = lambda u, v, e, prev_e: e['cost']
+        u = node_start.id
+        v = node_conextion.id
+        node_ids = find_path(graph, u, v, cost_func=cost_func).nodes
+        #print(node_ids)
+        
+        for node in nodes:
+            if node.id in node_ids:
+                node.is_way = True
+            else:
+                node.is_way = False
+            
+            node.save()
+        print("calculou")
+    except Exception as e:
+        pass
+        print("não calculou")
+    
+    return JsonResponse({})

@@ -14,7 +14,7 @@ class StudentAdmin(admin.ModelAdmin):
 
 class NodesAdmin(admin.ModelAdmin): 
     inlines = (StudentInformationsInline,) 
-    list_display = ("name","get_activities","node_parent")
+    list_display = ("id","name","get_activities","node_parent","node_end",'end_node_conexction',"is_way")
 
 admin.site.register(Classes)
 admin.site.register(Student,StudentAdmin)

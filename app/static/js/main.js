@@ -16,10 +16,10 @@ var diagonal = d3.svg.diagonal()
 // Colors as an array
 // https://github.com/mbostock/d3/wiki/Ordinal-Scales#category20
 // cores tag = [nó fim - caminho sem alunos(filtro) - nota 0 - nota 5 - nota 10]
-// sequencia das cores = [roxo, cinza, vermelho, amarelo, verde]
-var colors = d3.scale.linear().domain([-2, -1, 0, 5, 10]).range(["#7E57C2", "#BDBDBD", "#DD2C00", "#FFD600", "#1B5E20"]);
+// sequencia das cores = [preto,roxo, cinza, vermelho, amarelo, verde]
+var colors = d3.scale.linear().domain([-3,-2, -1, 0, 5, 10]).range(["#757575","#7E57C2", "#BDBDBD", "#DD2C00", "#FFD600", "#1B5E20"]);
 // sequencia das cores daltonico = [roxo, cinza, vermelho(daltonico), amarelo(daltonico), verde(daltonico)]
-var color_blind = d3.scale.linear().domain([-2, -1, 0, 5, 10]).range(["#7E57C2", "#BDBDBD", "#fc8d59", "#ffffbf", "#91cf60"]);
+var color_blind = d3.scale.linear().domain([-3,-2, -1, 0, 5, 10]).range(["#757575","#7E57C2", "#BDBDBD", "#fc8d59", "#ffffbf", "#91cf60"]);
 
 var svg = d3.select("#container_visualization").append("svg")
     .attr("width", width + margin.right + margin.left)
@@ -27,10 +27,16 @@ var svg = d3.select("#container_visualization").append("svg")
     .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-init_get_json()
 
 function init_get_json(params_filter = "") {
-    d3.json("/api/all" + params_filter, function (data) {
+    var user_teacher_id;
+    if (params_filter == "") {
+        user_teacher_id = "?user_teacher_id=" + get_user_teacher_id();
+    } else {
+        user_teacher_id = "&user_teacher_id=" + get_user_teacher_id();
+    }
+
+    d3.json("/api/all" + params_filter + user_teacher_id, function (data) {
         root = {
             "name": "Inicio",
             "root": true,
@@ -86,6 +92,12 @@ function update(source) {
     nodeUpdate.select("circle")
         .attr("r", 20)
         .style("fill", function (d) {
+            console.log("nó")
+            console.log(d.node_name)
+            console.log(d.node_end)
+            if (d.node_end == true){
+                return "black";
+            }
             if (d.node_evaluated == false) {
                 /**
                  * se o nó não for avaliado a cor do nó fica branca e a sua média permanece a do nó pai
@@ -145,14 +157,14 @@ function update(source) {
             if (d.target.node_avg == null) {
                 return "blue";
             }
-            if (d.target.node_end) {
-                /**
-                 * Se for um nó fim, o link permanece com a cor do pai seu pai
-                 */
-                return avg = d.target.parent.node_avg;
-            }
+            // if (d.target.node_end) {
+            //     /**
+            //      * Se for um nó fim, o link permanece com a cor do pai seu pai
+            //      */
+            //     return avg = d.target.parent.node_avg;
+            // }
             avg = d.target.node_avg;
-            
+
             var tag_color_blind = d3.select("#color_blind").property("checked");
 
             if (tag_color_blind) {
@@ -186,16 +198,43 @@ function update(source) {
 function click(d) {
     if (d.classe_id || d.root) {
         if (d.children) {
+            console.log("->1")
             d._children = d.children;
             d.children = null;
+            update(d);
         } else {
-            if (d._children != null) {
-                d.children = d._children;
-                d._children = null;
-                d.children.forEach(expand);
+            console.log("----")
+            console.log(d.classe_id)
+            var global_classe_id = d.classe_id;
+            var params_way = get_way();
+            if (params_way == "") {
+                console.log("normal")
+                if (d._children != null) {
+                    d.children = d._children;
+                    d._children = null;
+                    d.children.forEach(expand);
+                }
+                update(d);
+            } else {
+                params_way = "?" + params_way;
+                console.log("calular" + params_way);
+                var spinner = d3.select("#spinner");
+                var spinner_class = spinner.attr("class");
+                spinner.attr("class",spinner_class+"is-active");
+                d3.json("/api/node/calcway/" + global_classe_id + params_way, function (data) {
+                    console.log("terminou")
+                    if (d._children != null) {
+                        d.children = d._children;
+                        d._children = null;
+                        d.children.forEach(expand);
+                    }
+                    spinner.attr("class",spinner_class);
+                    update(d);
+                });
             }
+
         }
-        update(d);
+
     } else {
         //código para mostrar os gráficos
         tooltip_tablle(d);
@@ -220,8 +259,14 @@ function expand(d) {
         }
         update(d);
     } else {
-        var params_filter = get_params_filter()
-        d3.json("/api/node/" + d.node_id + params_filter, function (data) {
+        var params_filter = get_params_filter();
+        var params_way = get_way();
+        if (params_filter == "") {
+            params_filter = "?" + params_filter;
+        }else{
+            params_way = "&"+params_way;
+        }
+        d3.json("/api/node/" + d.node_id + params_filter + params_way, function (data) {
             d.children = data;
             d._children = null;
             d.children.forEach(expand);

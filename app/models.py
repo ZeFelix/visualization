@@ -79,6 +79,8 @@ class Node(models.Model):
     node_end = models.BooleanField("Nó fim (Folha)?", default=False)
     node_start = models.BooleanField("Nó inicio", default=False)
     evaluated = models.BooleanField("Esse nó é avaliado?", default=True)
+    is_way = models.BooleanField("É um caminho válido (bom e/ou ruim)", default=False)
+    end_node_conexction = models.BooleanField("Nó que conecta todos os nós folhas (FIM)", default=False)
 
     def __str__(self):
         return str(self.name) + "-"+str(self.get_activities())
