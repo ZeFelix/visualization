@@ -136,10 +136,6 @@ function tooltip_tablle(data) {
         .call(svg, obj);
 };
 
-function get_user_teacher_id() {
-    return d3.select("#user_teacher_id").attr("value");
-}
-
 /**
  * 
  * retorna o filtro de caminho selecionado
@@ -157,4 +153,18 @@ function clear_way() {
     d3.select("#best_way").property("checked", false);
     d3.select("#worse_way").property("checked", false);
     init_get_json();
+}
+
+function get_classe_id() {
+    var classe_id = $(".classe_id").toArray();
+    var id;
+    console.log()
+    classe_id.forEach(element => {
+        if(element.checked){
+            console.log("selecionado");
+            console.log(element.value);
+            id = element.value;
+        }
+    });
+    return id;
 }

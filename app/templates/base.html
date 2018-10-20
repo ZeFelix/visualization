@@ -43,7 +43,7 @@
             <div class="navbar-fixed">
                 <nav class="navbar white">
                     <div class="nav-wrapper row">
-                        <div class="col s1"><a href="/api" class="brand-logo grey-text text-darken-4">Home</a></div>
+                        <div class="col s1"><a id="home" href= "teacher/{{request.user.id}}" class="brand-logo grey-text text-darken-4">Home</a></div>
                         <div class="col s2"><a href="#!" onclick="init_get_json()" class="brand-logo grey-text text-darken-4">Visualizar
                                 Design
                             </a></div>
@@ -157,6 +157,15 @@
                                     <li>
                                         <a class=" waves-light btn-small  red" onclick="clear_way()">Limpar</a>
                                     </li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li class="bold  "><a class="collapsible-header">Turmas<i class="material-icons chevron">chevron_left</i></a>
+                            <div class="collapsible-body ">
+                                <ul id="ul_classe">
+                                    {% block li_classe %}
+                                    
+                                    {% endblock li_classe %}
                                 </ul>
                             </div>
                         </li>

@@ -31,14 +31,8 @@ var svg = d3.select("#container_visualization").append("svg")
 
 
 function init_get_json(params_filter = "") {
-    var user_teacher_id;
-    if (params_filter == "") {
-        user_teacher_id = "?user_teacher_id=" + get_user_teacher_id();
-    } else {
-        user_teacher_id = "&user_teacher_id=" + get_user_teacher_id();
-    }
 
-    d3.json("/api/all" + params_filter + user_teacher_id, function (data) {
+    d3.json("/api/all/" + get_classe_id() +params_filter, function (data) {
         data.forEach(function (params) {
             console.log(params);
         });

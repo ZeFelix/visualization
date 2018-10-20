@@ -5,11 +5,11 @@ from app.views import AllList, NodeDetail, StudentDetail, gantt, gantt_detail, \
 
 
 urlpatterns = [
-    path("all",AllList.as_view()),
+    path("all/<int:classe_id>",AllList.as_view()),
     path("node/<int:node_id>/<int:classe_id>",NodeDetail.as_view()),
     path("node/calcway/<int:classe_id>",calc_way, name='calc_way'),
     path("node/<int:node_id>/students",StudentDetail.as_view()),
-    path("",index),
+    path("teacher/<int:id>",index),
     path("login",login_user),
     path("logout",logout_user, name='logout'),
     path("gantt",gantt, name='gantt'),

@@ -1,5 +1,3 @@
-from signal import signal
-
 from dijkstar import Graph, find_path
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -27,24 +25,17 @@ class AllList(APIView):
     Método http permuitido: get
     """
 
-    def get(self, request):
-        user_teacher_id = request.query_params.get('user_teacher_id')
+    def get(self, request,classe_id):
         informations = []
-        if user_teacher_id == None:
-            classes = Classes.objects.all()
-        else:
-            teacher = Teacher.objects.filter(user=user_teacher_id).first()
-            classes = teacher.classe.all()
-
-        serializer = ClassesSerialzer(classes, many=True)
-        for classe in classes:
-            students = Student.objects.filter(classe=classe).count()
-            informations.append({
-                "classe_id": classe.id,
-                "name": classe.name,
-                "students_quantity": students,
-                "children": self.get_node_start(classe, request)
-            })
+        classe = Classes.objects.get(pk=classe_id)
+        serializer = ClassesSerialzer(classe)
+        students = Student.objects.filter(classe=classe).count()
+        informations.append({
+            "classe_id": classe.id,
+            "name": classe.name,
+            "students_quantity": students,
+            "children": self.get_node_start(classe, request)
+        })
         # serializer = ClassesSerialzer(classes,many=True)
         return Response(informations)
 
@@ -92,6 +83,7 @@ class NodeDetail(APIView):
         número -1: indica a cor de um nó que n tem aluno que pertence ao filtro
         """
         node_formatation = None
+        is_filter = False
         
         way = True if not request.query_params.get("way") == None else False
 
@@ -109,6 +101,7 @@ class NodeDetail(APIView):
             students = node.students.filter(Q(sex=sex_f) | Q(
                 sex=sex_m), Q(school_origin=public) | Q(school_origin=particular),
                 Q(civil_status=married) | Q(civil_status=not_married), ager__range=(start_ager, end_ager))
+            is_filter = True
         except Exception as a:
             students = node.students.all()
         students = students.filter(classe=classe)
@@ -138,16 +131,22 @@ class NodeDetail(APIView):
                 "students": students_serializer.data,
                 "student_informations": student_informations_serializer.data              
             }
-        elif node.students.count():
+        elif node.students.filter(classe=classe).count():
             # se não tiver aluno após o filtro
             # porém existem alunos naquele nó, ele adiciona uma média negativa (-1) para indicar a cor do caminho(link)
+            students = node.students.filter(classe=classe)
+            students_serializer = StudentSerializer(students, many=True)
+            student_informations = StudentInformations.objects.filter(student__in=students,node=node)
+            student_informations_serializer = StudentInformationsSerializer(student_informations,many=True)
             node_formatation = {
                 "node_name": node.name,
                 "node_id": node.id,
                 "node_avg": -1,
+                "node_end": node.node_end,
+                "node_evaluated": node.evaluated,
                 "name": node.activity.first().name,
-                "students": [],
-                "student_informations": []
+                "students": students_serializer.data,
+                "student_informations": student_informations_serializer.data
             }
         return node_formatation
 
@@ -166,16 +165,23 @@ class StudentDetail(APIView):
         return Response(serializer.data)
 
 @login_required(login_url = "/api/login")
-def index(request, template_name="index.html"):
-    return render(request, template_name)
+def index(request,id,template_name="index.html"):
+    try:
+        teacher = Teacher.objects.get(pk=id)
+    except Exception as e:
+        teacher = Teacher.objects.filter(user=id).first()
+
+    context = {"classes":teacher.classe.all().order_by("name")}
+    return render(request, template_name, context)
 
 def login_user(request, template_name="login.html"):
     """
     Método para realizar login
     """
-    nex = request.GET.get("next", "/api")
+    nex = request.GET.get("next", "/api/teacher")
     if request.user.is_authenticated:
-        return HttpResponseRedirect('/api')
+        teacher = Teacher.objects.filter(user=request.user).first()
+        return HttpResponseRedirect('/api/teacher/%s' % str(teacher.id))
     else:
         if request.method == "POST":
             username = request.POST["username"]
@@ -184,7 +190,8 @@ def login_user(request, template_name="login.html"):
             if user is not None:
                 if user.is_active:
                     login(request, user)
-                    return HttpResponseRedirect(nex)
+                    teacher = Teacher.objects.filter(user=user).first()
+                    return HttpResponseRedirect(nex+"/"+str(teacher.id))
                 return HttpResponseRedirect("/api/login")
             else:
                 return HttpResponseRedirect("/api/login")
@@ -257,9 +264,11 @@ class TeacherDetail(APIView):
         teacher_serializer = TeacherSerializer(teacher)
         students = Student.objects.filter(classe__in=teacher.classe.all())
         student_serializer = StudentSerializer(students, many=True)
+        classe_serializer = ClassesSerialzer(teacher.classe.all(), many=True)
         response = {
             "teacher" : teacher_serializer.data,
-            "students" : student_serializer.data
+            "students" : student_serializer.data,
+            "classes" : classe_serializer.data
         }
         return Response(response)
 
