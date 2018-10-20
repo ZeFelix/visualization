@@ -191,7 +191,7 @@ def login_user(request, template_name="login.html"):
                 if user.is_active:
                     login(request, user)
                     teacher = Teacher.objects.filter(user=user).first()
-                    return HttpResponseRedirect(nex+"/"+str(teacher.id))
+                    return HttpResponseRedirect("api/teacher/"+str(teacher.id))
                 return HttpResponseRedirect("/api/login")
             else:
                 return HttpResponseRedirect("/api/login")
