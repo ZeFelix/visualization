@@ -27,7 +27,7 @@ class StudentSerializer(serializers.ModelSerializer):
 class NodeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Node
-        fields = ["pk","name","activity","students","node_parent","node_end"]
+        fields = ["pk","name","activity","students","node_parent","node_end","evaluated","is_way"]
     
 class CourseSerializer(serializers.ModelSerializer):
     class Meta:

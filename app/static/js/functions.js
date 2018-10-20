@@ -135,3 +135,26 @@ function tooltip_tablle(data) {
         .width(180)
         .call(svg, obj);
 };
+
+function get_user_teacher_id() {
+    return d3.select("#user_teacher_id").attr("value");
+}
+
+/**
+ * 
+ * retorna o filtro de caminho selecionado
+ */
+function get_way() {
+    if (d3.select("#best_way").property("checked") == true) {
+        return "way=best_way";
+    } else if (d3.select("#worse_way").property("checked") == true) {
+        return "way=worse_way";
+    }
+    return "";
+}
+
+function clear_way() {
+    d3.select("#best_way").property("checked", false);
+    d3.select("#worse_way").property("checked", false);
+    init_get_json();
+}

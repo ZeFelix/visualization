@@ -27,6 +27,7 @@
     <link href="{% static 'css/materialize.css' %}" type="text/css" rel="stylesheet">
     <link href="{% static 'css/materialize.min.css' %}" type="text/css" rel="stylesheet">
     <link href="{% static 'css/tntvis_tooltip.css' %}" type="text/css" rel="stylesheet">
+    <link href="{% static 'css/css-loader.css' %}" type="text/css" rel="stylesheet">
 
 
 </head>
@@ -43,8 +44,10 @@
                 <nav class="navbar white">
                     <div class="nav-wrapper row">
                         <div class="col s1"><a href="/api" class="brand-logo grey-text text-darken-4">Home</a></div>
-                        <div class="col s2"><a href="#!" onclick="init_get_json()" class="brand-logo grey-text text-darken-4">Visualizar Design</a></div>
-                        <div class=" col s8">
+                        <div class="col s2"><a href="#!" onclick="init_get_json()" class="brand-logo grey-text text-darken-4">Visualizar
+                                Design
+                            </a></div>
+                        <div class=" col s9">
                             <ul id="nav-mobile" class="right">
                                 {% if request.user.is_authenticated %}
                                 <ul class="right hide-on-med-and-down">
@@ -53,7 +56,7 @@
                                 {% endif %}
                         </div>
                         {% if request.user.is_authenticated %}
-                            </ul><a href="#!" data-target="sidenav-left" class="sidenav-trigger left"><i class="material-icons black-text">menu</i></a>
+                        </ul><a href="#!" data-target="sidenav-left" class="sidenav-trigger left"><i class="material-icons black-text">menu</i></a>
                         {% endif %}
                     </div>
                 </nav>
@@ -99,7 +102,8 @@
                                     <li style="padding-left:15px">
                                         Estado Civil:
                                         <label>
-                                            <input type="checkbox" id="not_married" checked /> Solteiro
+                                            <input type="checkbox" id="not_married" checked />
+                                            <span>Solteiro</span>
                                         </label>
                                         <label>
                                             <input type="checkbox" id="married" checked />
@@ -139,10 +143,19 @@
                             <div class="collapsible-body ">
                                 <ul>
                                     <li>
-                                        <a href="{% url 'gantt' %}" class="">Melhor Caminho<i class="material-icons">call_merge</i></a>
+                                        <label>
+                                            <input name="group1" type="radio" id="best_way" />
+                                            <span class="black-text">Caminho de Melhor Desempenho</span>
+                                        </label>
                                     </li>
                                     <li>
-                                        <a href="{% url 'gantt' %}" class="">Pior Caminho<i class="material-icons">call_split</i></a>
+                                        <label>
+                                            <input name="group1" type="radio" id="worse_way" />
+                                            <span class="black-text">Caminho de Pior Desempenho</span>
+                                        </label>
+                                    </li>
+                                    <li>
+                                        <a class=" waves-light btn-small  red" onclick="clear_way()">Limpar</a>
                                     </li>
                                 </ul>
                             </div>
@@ -151,7 +164,7 @@
                     {% else %}
                     <nav>
                         <div class="nav-wrapper">
-                            <a href="#!" class="brand-logo center">Data Visualization</a>
+                            <a href="#!" class="brand-logo center">Visualização de Dados</a>
                         </div>
                     </nav>
                     {% endif %}
@@ -162,6 +175,9 @@
                     {% if request.user.is_authenticated %}
                     <div class="col s12 center">
                         <h2>Visualização</h2>
+                        <div class="loader loader-default " id="spinner">
+                            <h2>Por favor, aguarde enquanto geramos o caminho!</h2>
+                        </div>
                     </div>
                     {% endif %}
                     <div class="col s12" id="container_visualization">
@@ -176,6 +192,8 @@
         <script type="text/javascript" src="{% static 'js/materialize.js' %}"></script>
         <script type="text/javascript" src="{% static 'js/materialize.min.js' %}"></script>
         <script type="text/javascript" src="{% static 'js/tntvis_tooltip.min.js' %}"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/spin.js/2.3.2/spin.js"></script>
+
         <script>  
             $(document).ready(function () {
                 $('.sidenav').sidenav();

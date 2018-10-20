@@ -1,0 +1,7 @@
+graph = Graph()
+graph.add_edge(1, 2, {'cost': 10})
+graph.add_edge(1, 5, {'cost': 1})
+graph.add_edge(5, 2, {'cost': 3})
+graph.add_edge(2, 5, {'cost': 3})
+cost_func = lambda u, v, e, prev_e: e['cost']
+find_path(graph, 1, 2, cost_func=cost_func)
