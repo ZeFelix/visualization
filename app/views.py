@@ -43,17 +43,17 @@ class AllList(APIView):
                 "classe_id": classe.id,
                 "name": classe.name,
                 "students_quantity": students,
-                "children": self.get_node_start(classe.course, request)
+                "children": self.get_node_start(classe, request)
             })
         # serializer = ClassesSerialzer(classes,many=True)
         return Response(informations)
 
-    def get_node_start(self, course, request):
-        node = Node.objects.filter(course=course, node_start=True).first()
+    def get_node_start(self, classe, request):
+        node = Node.objects.filter(course=classe.course, node_start=True).first()
         data = []
 
         if node:
-            data.append(NodeDetail.format_node_information(node,request))
+            data.append(NodeDetail.format_node_information(node,request,classe))
         return data
 
 
@@ -63,13 +63,13 @@ class NodeDetail(APIView):
     Método http permito: get
     """
 
-    def get(self, request, node_id):
+    def get(self, request, node_id,classe_id):
         node_parent = Node.objects.get(pk=node_id)
         nodes = Node.objects.filter(node_parent=node_parent)
         data = []
         for node in nodes:
             if node:
-                data.append(self.format_node_information(node, request))
+                data.append(self.format_node_information(node, request, classe_id))
         return Response(data)
                 
 
@@ -84,7 +84,7 @@ class NodeDetail(APIView):
         return average["notes__avg"]
 
     @classmethod
-    def format_node_information(self, node, request):
+    def format_node_information(self, node, request, classe):
         """
         Método para formatar o as informações de retorno do nó
         Recebe um nó por paramentro
@@ -111,6 +111,9 @@ class NodeDetail(APIView):
                 Q(civil_status=married) | Q(civil_status=not_married), ager__range=(start_ager, end_ager))
         except Exception as a:
             students = node.students.all()
+        students = students.filter(classe=classe)
+        print("detalhes")
+        print(students)
         if students.count():
             # só adciona um nó se o mesmo tiver algum aluno
             students_serializer = StudentSerializer(

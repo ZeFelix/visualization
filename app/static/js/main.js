@@ -13,6 +13,8 @@ var tree = d3.layout.tree()
 var diagonal = d3.svg.diagonal()
     .projection(function (d) { return [d.y, d.x]; });
 
+var global_classe_id;
+
 // Colors as an array
 // https://github.com/mbostock/d3/wiki/Ordinal-Scales#category20
 // cores tag = [nó fim - caminho sem alunos(filtro) - nota 0 - nota 5 - nota 10]
@@ -37,6 +39,9 @@ function init_get_json(params_filter = "") {
     }
 
     d3.json("/api/all" + params_filter + user_teacher_id, function (data) {
+        data.forEach(function (params) {
+            console.log(params);
+        });
         root = {
             "name": "Inicio",
             "root": true,
@@ -205,7 +210,8 @@ function click(d) {
         } else {
             console.log("----")
             console.log(d.classe_id)
-            var global_classe_id = d.classe_id;
+            var classe_id = d.classe_id;
+            global_classe_id = classe_id;
             var params_way = get_way();
             if (params_way == "") {
                 console.log("normal")
@@ -221,7 +227,7 @@ function click(d) {
                 var spinner = d3.select("#spinner");
                 var spinner_class = spinner.attr("class");
                 spinner.attr("class",spinner_class+"is-active");
-                d3.json("/api/node/calcway/" + global_classe_id + params_way, function (data) {
+                d3.json("/api/node/calcway/" + classe_id + params_way, function (data) {
                     console.log("terminou")
                     if (d._children != null) {
                         d.children = d._children;
@@ -266,7 +272,7 @@ function expand(d) {
         }else{
             params_way = "&"+params_way;
         }
-        d3.json("/api/node/" + d.node_id + params_filter + params_way, function (data) {
+        d3.json("/api/node/" + d.node_id +"/"+ global_classe_id + params_filter + params_way, function (data) {
             d.children = data;
             d._children = null;
             d.children.forEach(expand);
