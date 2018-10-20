@@ -16,10 +16,10 @@ var diagonal = d3.svg.diagonal()
 // Colors as an array
 // https://github.com/mbostock/d3/wiki/Ordinal-Scales#category20
 // cores tag = [nó fim - caminho sem alunos(filtro) - nota 0 - nota 5 - nota 10]
-// sequencia das cores = [roxo, cinza, vermelho, amarelo, verde]
-var colors = d3.scale.linear().domain([-2, -1, 0, 5, 10]).range(["#7E57C2", "#BDBDBD", "#DD2C00", "#FFD600", "#1B5E20"]);
+// sequencia das cores = [preto,roxo, cinza, vermelho, amarelo, verde]
+var colors = d3.scale.linear().domain([-3,-2, -1, 0, 5, 10]).range(["#757575","#7E57C2", "#BDBDBD", "#DD2C00", "#FFD600", "#1B5E20"]);
 // sequencia das cores daltonico = [roxo, cinza, vermelho(daltonico), amarelo(daltonico), verde(daltonico)]
-var color_blind = d3.scale.linear().domain([-2, -1, 0, 5, 10]).range(["#7E57C2", "#BDBDBD", "#fc8d59", "#ffffbf", "#91cf60"]);
+var color_blind = d3.scale.linear().domain([-3,-2, -1, 0, 5, 10]).range(["#757575","#7E57C2", "#BDBDBD", "#fc8d59", "#ffffbf", "#91cf60"]);
 
 var svg = d3.select("#container_visualization").append("svg")
     .attr("width", width + margin.right + margin.left)
@@ -92,6 +92,12 @@ function update(source) {
     nodeUpdate.select("circle")
         .attr("r", 20)
         .style("fill", function (d) {
+            console.log("nó")
+            console.log(d.node_name)
+            console.log(d.node_end)
+            if (d.node_end == true){
+                return "black";
+            }
             if (d.node_evaluated == false) {
                 /**
                  * se o nó não for avaliado a cor do nó fica branca e a sua média permanece a do nó pai
@@ -151,12 +157,12 @@ function update(source) {
             if (d.target.node_avg == null) {
                 return "blue";
             }
-            if (d.target.node_end) {
-                /**
-                 * Se for um nó fim, o link permanece com a cor do pai seu pai
-                 */
-                return avg = d.target.parent.node_avg;
-            }
+            // if (d.target.node_end) {
+            //     /**
+            //      * Se for um nó fim, o link permanece com a cor do pai seu pai
+            //      */
+            //     return avg = d.target.parent.node_avg;
+            // }
             avg = d.target.node_avg;
 
             var tag_color_blind = d3.select("#color_blind").property("checked");
@@ -257,6 +263,8 @@ function expand(d) {
         var params_way = get_way();
         if (params_filter == "") {
             params_filter = "?" + params_filter;
+        }else{
+            params_way = "&"+params_way;
         }
         d3.json("/api/node/" + d.node_id + params_filter + params_way, function (data) {
             d.children = data;
@@ -265,19 +273,4 @@ function expand(d) {
             update(d);
         });
     }
-}
-
-function get_opts() {
-    // loader settings
-    var opts = {
-        lines: 9, // The number of lines to draw
-        length: 9, // The length of each line
-        width: 5, // The line thickness
-        radius: 14, // The radius of the inner circle
-        color: '#EE3124', // #rgb or #rrggbb or array of colors
-        speed: 1.9, // Rounds per second
-        trail: 40, // Afterglow percentage
-        className: 'spinner', // The CSS class to assign to the spinner
-    };
-    return opts;
 }

@@ -121,7 +121,7 @@ class NodeDetail(APIView):
                 if node.is_way:
                     node_avg = self.get_node_average(node, students)
                 else:
-                    node_avg = -1    
+                    node_avg = -3  
             else:
                 node_avg = self.get_node_average(node, students)
 
