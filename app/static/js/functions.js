@@ -42,7 +42,7 @@ function ager_checked_click() {
 
 function clear_filter_params() {
     set_field_default();
-    init_get_json();
+    init_get_json("");
 }
 
 /**
@@ -193,5 +193,5 @@ function checkbox_changed(id) {
             element.checked = false;
         }
     });
-    init_get_json();
+    set_filter_params();
 }
