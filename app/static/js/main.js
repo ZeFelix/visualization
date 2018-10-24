@@ -30,7 +30,7 @@ var svg = d3.select("#container_visualization").append("svg")
 
 function init_get_json() {
 
-    d3.json("/api/all/" + get_classe_id(), function (data) {
+    d3.json("/api/classe/" + get_classe_id()+"/node", function (data) {
         data.forEach(function (params) {
             console.log(params);
         });
@@ -202,7 +202,11 @@ function click(d) {
             if (d._children != null) {
                 d.children = d._children;
                 d._children = null;
-                d.children.forEach(expand);
+                console.log("anes")
+                console.log(d.node_id)
+                d.children.forEach(function (children) {
+                    expand(children,"start=true");
+                });
             }
         }
         update(d);
@@ -216,7 +220,7 @@ function click(d) {
  * 
  * expandir todos os nós 
  */
-function expand(d) {
+function expand(d,click) {
     if (d.classe_id || d.root) {
         if (d.children) {
             d._children = d.children;
@@ -225,7 +229,9 @@ function expand(d) {
             if (d._children != null) {
                 d.children = d._children;
                 d._children = null;
-                d.children.forEach(expand);
+                d.children.forEach(function (children) {
+                    expand(children,"");
+                });
             }
         }
         update(d);
@@ -233,14 +239,16 @@ function expand(d) {
         var params_filter = get_params_filter();
         var params_way = get_way();
         if (params_filter == "") {
-            params_filter = "?" + params_filter;
+            params_filter = "?" + params_filter+click;
         } else {
-            params_way = "&" + params_way;
+            params_way = "&" + params_way+click;
         }
         console.log("Buscar nó:")
-        console.log(get_classe_id())
+        console.log(d.node_id)
         console.log("--")
-        d3.json("/api/node/" + d.node_id + "/" + get_classe_id() + params_filter + params_way, function (data) {
+        console.log("click")
+        console.log(click)
+        d3.json("/api/classe/" + get_classe_id() +"/node/" + d.node_id + params_filter + params_way, function (data) {
             d.children = data;
             d._children = null;
             d.children.forEach(expand);

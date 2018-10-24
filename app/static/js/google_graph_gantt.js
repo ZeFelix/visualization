@@ -8,7 +8,7 @@ function search_informations_student() {
     if (input_text != "") {
         var student_id = get_id_input_text(input_text);
         console.log("id:"+student_id);
-        d3.json('/api/gantt/'+student_id, function (err, data) {
+        d3.json('/api/gantt/student/'+student_id, function (err, data) {
             console.log(data.context)
             create_graph(data.context)
         });

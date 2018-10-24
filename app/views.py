@@ -44,7 +44,7 @@ class AllList(APIView):
         data = []
 
         if node:
-            data.append(NodeDetail.format_node_information(node,request,classe))
+            data.append(NodeDetail.format_node_information(node,request,classe.id))
         return data
 
 
@@ -57,6 +57,8 @@ class NodeDetail(APIView):
     def get(self, request, node_id,classe_id):
         node_parent = Node.objects.get(pk=node_id)
         nodes = Node.objects.filter(node_parent=node_parent)
+        print("node parent")
+        print(node_parent)
         data = []
         for node in nodes:
             if node:
@@ -75,7 +77,7 @@ class NodeDetail(APIView):
         return average["notes__avg"]
 
     @classmethod
-    def format_node_information(self, node, request, classe):
+    def format_node_information(self, node, request, classe_id):
         """
         Método para formatar o as informações de retorno do nó
         Recebe um nó por paramentro
@@ -100,12 +102,19 @@ class NodeDetail(APIView):
             particular = request.GET["particular"]
             students = node.students.filter(Q(sex=sex_f) | Q(
                 sex=sex_m), Q(school_origin=public) | Q(school_origin=particular),
-                Q(civil_status=married) | Q(civil_status=not_married), ager__range=(start_ager, end_ager))
+                Q(civil_status=married) | Q(civil_status=not_married), ager__range=(start_ager, end_ager), classe=classe_id)
+            print(students)
+            print("filtro")
             is_filter = True
         except Exception as a:
-            students = node.students.all()
-        students = students.filter(classe=classe)
+            print("classe")
+            print(classe_id)
+            print(node.students)
+            students = node.students.filter(Q(classe=classe_id))
+            print(node.students.filter(Q(classe=classe_id)))
+
         print("detalhes")
+        print(node.activity.first().name)
         print(students)
         if students.count():
             # só adciona um nó se o mesmo tiver algum aluno
@@ -131,10 +140,10 @@ class NodeDetail(APIView):
                 "students": students_serializer.data,
                 "student_informations": student_informations_serializer.data              
             }
-        elif node.students.filter(classe=classe).count():
+        elif node.students.filter(Q(classe=classe_id)).count():
             # se não tiver aluno após o filtro
             # porém existem alunos naquele nó, ele adiciona uma média negativa (-1) para indicar a cor do caminho(link)
-            students = node.students.filter(classe=classe)
+            students = node.students.filter(Q(classe=classe_id))
             students_serializer = StudentSerializer(students, many=True)
             student_informations = StudentInformations.objects.filter(student__in=students,node=node)
             student_informations_serializer = StudentInformationsSerializer(student_informations,many=True)

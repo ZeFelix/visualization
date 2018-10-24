@@ -6,7 +6,7 @@
 function create_table(node_id) {
     console.log("create table: node id");
     console.log(node_id);
-    d3.json('/api/gantt/'+node_id+"/1", function (err, data) {
+    d3.json('/api/gantt/node/'+node_id+"/student/1", function (err, data) {
         console.log("retorno das informações da atividade do nó")
         console.log(data)
         generator_table(data);
