@@ -20,9 +20,9 @@ function generator_table(params) {
 
     function drawTable() {
         var data = new google.visualization.DataTable();
-        data.addColumn('string', 'Name');
-        data.addColumn('string', 'Note');
-        data.addColumn('number', 'Amount Access');
+        data.addColumn('string', 'Nome');
+        data.addColumn('string', 'Nota');
+        data.addColumn('number', 'Quantidade de Acesso');
         console.log(params);
         data.addRows([
             [params.student.name, params.student_informations.notes, params.student_informations.amount_access],

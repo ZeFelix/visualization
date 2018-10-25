@@ -18,7 +18,7 @@ function search_informations_student() {
 }
 
 function create_graph(rows) {
-    google.charts.load('current', { 'packages': ['gantt'] });
+    google.charts.load('current', { 'packages': ['gantt']});
     google.charts.setOnLoadCallback(drawChart);
 
     function drawChart() {
