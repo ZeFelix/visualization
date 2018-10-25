@@ -152,7 +152,7 @@ function get_way() {
 function clear_way() {
     d3.select("#best_way").property("checked", false);
     d3.select("#worse_way").property("checked", false);
-    init_get_json();
+    set_filter_params();
 }
 
 function get_classe_id() {
@@ -179,7 +179,7 @@ function calc_way() {
     d3.json("/api/node/calcway/" + get_classe_id() + params_way, function (data) {
         console.log(data);
        spinner.attr("class", spinner_class);
-       init_get_json();
+       set_filter_params();
     });
 }
 
