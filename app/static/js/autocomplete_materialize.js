@@ -10,7 +10,7 @@ function generator_autocomplete(data) {
     console.log(data)
     var dict = {};
     data.forEach(element => {
-        dict["Matrucula: "+element.pk + ", "+element.name] = null
+        dict["Matricula: "+element.pk + ", "+element.name] = null
     });
     $('input.autocomplete').autocomplete({
         data : dict,

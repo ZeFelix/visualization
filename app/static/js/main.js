@@ -16,9 +16,9 @@ var diagonal = d3.svg.diagonal()
 // Colors as an array
 // https://github.com/mbostock/d3/wiki/Ordinal-Scales#category20
 // cores tag = [nó fim - caminho sem alunos(filtro) - nota 0 - nota 5 - nota 10]
-// sequencia das cores = [preto,roxo, cinza, vermelho, amarelo, verde]
+// sequencia das cores = [cinza escuro,roxo, cinza, vermelho, amarelo, verde]
 var colors = d3.scale.linear().domain([-3, -2, -1, 0, 5, 10]).range(["#757575", "#7E57C2", "#BDBDBD", "#DD2C00", "#FFD600", "#1B5E20"]);
-// sequencia das cores daltonico = [roxo, cinza, vermelho(daltonico), amarelo(daltonico), verde(daltonico)]
+// sequencia das cores daltonico = [cinza escuro,roxo, cinza, vermelho(daltonico), amarelo(daltonico), verde(daltonico)]
 var color_blind = d3.scale.linear().domain([-3, -2, -1, 0, 5, 10]).range(["#757575", "#7E57C2", "#BDBDBD", "#fc8d59", "#ffffbf", "#91cf60"]);
 
 var svg = d3.select("#container_visualization").append("svg")
