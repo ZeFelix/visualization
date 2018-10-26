@@ -53,7 +53,7 @@ function create_graph(rows) {
         data.addRows(rows_aux);
 
         var options = {
-            width: 710,
+            width: '100%',
             gantt: {
                 trackHeight: 30
             }

@@ -81,6 +81,7 @@ class Node(models.Model):
     evaluated = models.BooleanField("Esse nó é avaliado?", default=True)
     is_way = models.BooleanField("É um caminho válido (bom e/ou ruim)", default=False)
     end_node_conexction = models.BooleanField("Nó que conecta todos os nós folhas (FIM)", default=False)
+    avg_access = models.IntegerField("Média de Acesso", default=0)
 
     def __str__(self):
         return str(self.name) + "-"+str(self.get_activities())

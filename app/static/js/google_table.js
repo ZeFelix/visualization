@@ -23,9 +23,10 @@ function generator_table(params) {
         data.addColumn('string', 'Nome');
         data.addColumn('string', 'Nota');
         data.addColumn('number', 'Quantidade de Acesso');
+        data.addColumn('number', 'Média de Acesso');
         console.log(params);
         data.addRows([
-            [params.student.name, params.student_informations.notes, params.student_informations.amount_access],
+            [params.student.name, params.student_informations.notes, params.student_informations.amount_access,params.node.avg_access],
         ]);
 
         var table = new google.visualization.Table(document.getElementById('table_div'));
