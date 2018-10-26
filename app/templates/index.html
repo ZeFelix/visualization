@@ -1,25 +1,21 @@
-{% extends "base.html" %}
-{% load static %} 
-{% block li_classe %}
-    {% for classe in classes %}
-    <li style="padding-left:15px">
+{% extends "base.html" %} {% load static %} {% block li_classe %} {% for classe in classes %}
+<li style="padding-left:15px">
+    <label>
+        <input onclick="checkbox_changed({{classe.id}})" type="checkbox" id="{{classe.id}}" class="classe_id" value="{{classe.id}}"
+        />
+        <span class="black-text">{{classe.name}}</span>
         <label>
-            <input onclick="checkbox_changed({{classe.id}})" type="checkbox" id="{{classe.id}}" class="classe_id" value="{{classe.id}}" />
-            <span class="black-text">{{classe.name}}</span>
-        <label>
-    </li>
-    {% endfor %}
-{% endblock li_classe %}
+</li>
+{% endfor %} {% endblock li_classe %} {% block content %}
+<div class=" col s12" id="container_visualization">
 
+</div>
 
-{% block content %}
-{% endblock content %}
-{%block footer %}
+{% endblock content %} {%block footer %}
 <script>
-    $(document).ready(function(){
+    $(document).ready(function () {
         $(".classe_id")[0].checked = true;
     });
 </script>
 <script type="text/javascript" src="{% static 'js/main.js' %}"></script>
-<script type="text/javascript" src="{% static 'js/functions.js' %}"></script>
-{% endblock footer %}
+<script type="text/javascript" src="{% static 'js/functions.js' %}"></script> {% endblock footer %}

@@ -184,7 +184,8 @@
                                             </div>
                                             <div class="legend2 not-blind">
                                                 <p class="black-text country-name"><span class="key-dot node_red"></span>Nota
-                                                    0</p>
+                                                    0
+                                                </p>
                                             </div>
                                             <div class="legend2">
                                                 <p class="black-text country-name"><span class="key-dot node_black"></span>Atividade
@@ -249,13 +250,8 @@
                         </div>
                     </div>
 
-                    {% endif %}
-                    <div class="col s12" id="container_visualization">
-
-                    </div>
-
+                    {% endif %} {% block content %} {% endblock content %}
                 </div>
-                {% block content %} {% endblock content %}
             </div>
             </div>
             </div>

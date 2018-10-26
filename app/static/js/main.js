@@ -1,6 +1,6 @@
 // ************** Generate the tree diagram	 *****************
 var margin = { top: 20, right: 120, bottom: 20, left: 100 },
-    width = 5000 - margin.right - margin.left,
+    width = 1000 - margin.right - margin.left,
     height = 500 - margin.top - margin.bottom;
 
 var i = 0,
@@ -24,6 +24,9 @@ var color_blind = d3.scale.linear().domain([-3, -2, -1, 0, 5, 10]).range(["#7575
 var svg = d3.select("#container_visualization").append("svg")
     .attr("width", width + margin.right + margin.left)
     .attr("height", height + margin.top + margin.bottom)
+    .call(d3.behavior.zoom().on("zoom", function () {
+        svg.attr("transform", "translate(" + d3.event.translate + ")" + " scale(" + d3.event.scale + ")")
+      }))
     .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
