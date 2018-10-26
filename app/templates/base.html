@@ -241,14 +241,12 @@
         </header>
         <main>
             <div class="container">
-                <div class="row ">
+                <div class="row center">
                     {% if request.user.is_authenticated %}
-                    <div class="col s12 center">
-                        <h2>Visualização</h2>
+                        <h3>Visualização</h3>
                         <div class="loader loader-default " id="spinner">
                             <h2>Por favor, aguarde enquanto geramos o caminho!</h2>
                         </div>
-                    </div>
 
                     {% endif %} {% block content %} {% endblock content %}
                 </div>
