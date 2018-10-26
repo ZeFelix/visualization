@@ -53,3 +53,39 @@ body {
     color: black !important;
     opacity: 0.5 !important;
 }
+
+/*  legenda */
+.node_green { background: #1B5E20;}
+.node_gray_black { background: #757575;}
+.node_roxo { background: #7E57C2;}
+.node_gray { background: #BDBDBD;}
+.node_red { background: #DD2C00;}
+.node_yellow { background: #FFD600;}
+.node_black { background: black;}
+.node_blue { background: blue;}
+
+.blind_node_green { background: #91cf60;}
+.blind_node_red { background: #fc8d59;}
+.blind_node_yellow { background: #ffffbf;}
+
+
+.country-name {
+    margin: 0 !important;
+}
+.key-dot {
+    display: inline-block;
+    height: 10px;
+    margin-right: .5em;
+    width: 10px;
+    border-style: solid;
+    border-width: thin;
+}
+
+#legend2{
+    overflow:hidden;
+}
+.legend2 {
+    float:left;
+    margin-right: 1em;
+}
+

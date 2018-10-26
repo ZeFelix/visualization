@@ -43,7 +43,7 @@
             <div class="navbar-fixed">
                 <nav class="navbar white">
                     <div class="nav-wrapper row">
-                        <div class="col s1"><a id="home" href= "/api/teacher/{{request.user.id}}" class="brand-logo grey-text text-darken-4">Home</a></div>
+                        <div class="col s1"><a id="home" href="/api/teacher/{{request.user.id}}" class="brand-logo grey-text text-darken-4">Home</a></div>
                         <div class="col s3"><a href="#!" onclick="init_get_json('')" class="brand-logo grey-text text-darken-4">Visualizar
                                 Design
                             </a></div>
@@ -163,9 +163,69 @@
                         <li class="bold  "><a class="collapsible-header">Turmas<i class="material-icons chevron">chevron_left</i></a>
                             <div class="collapsible-body ">
                                 <ul id="ul_classe">
-                                    {% block li_classe %}
-                                    
-                                    {% endblock li_classe %}
+                                    {% block li_classe %} {% endblock li_classe %}
+                                </ul>
+                            </div>
+                        </li>
+                        <li class="bold  "><a class="collapsible-header">Legenda<i class="material-icons chevron">chevron_left</i></a>
+                            <div class="collapsible-body ">
+                                <ul>
+                                    <div class="col s12">
+                                        <div class="legend2" style="padding-left:15px">
+                                            <div class="legend2 not-blind">
+                                                <p class="black-text country-name"><span class="key-dot node_green "></span>Nota
+                                                    10
+                                                </p>
+                                            </div>
+                                            <div class="legend2 not-blind">
+                                                <p class="black-text country-name"><span class="key-dot node_yellow"></span>Nota
+                                                    5
+                                                </p>
+                                            </div>
+                                            <div class="legend2 not-blind">
+                                                <p class="black-text country-name"><span class="key-dot node_red"></span>Nota
+                                                    0</p>
+                                            </div>
+                                            <div class="legend2">
+                                                <p class="black-text country-name"><span class="key-dot node_black"></span>Atividade
+                                                    Fim
+                                                </p>
+                                            </div>
+                                            <div class="legend2 blind">
+                                                <p class="black-text country-name"><span class="key-dot blind_node_green"></span>Dautônico:
+                                                    Nota 10
+                                                </p>
+                                            </div>
+                                            <div class="legend2 blind">
+                                                <p class="black-text country-name"><span class="key-dot blind_node_yellow"></span>Dautônico:
+                                                    Nota 5
+                                                </p>
+                                            </div>
+                                            <div class="legend2 blind">
+                                                <p class="black-text country-name"><span class="key-dot blind_node_red"></span>Dautônico:
+                                                    Nota 0
+                                                </p>
+                                            </div>
+                                            <div class="legend2">
+                                                <p class="black-text country-name"><span class="key-dot node_roxo"></span>Atividade
+                                                    não avaliativa</p>
+                                            </div>
+
+                                            <div class="legend2">
+                                                <p class="black-text country-name"><span class="key-dot node_blue"></span>Nó
+                                                    incial não faz parte do processo avaliativo</p>
+                                            </div>
+                                            <div class="legend2">
+                                                <p class="black-text country-name"><span class="key-dot node_gray"></span>Caminho
+                                                    fora do escopo do filtro
+                                                </p>
+                                            </div>
+                                            <div class="legend2">
+                                                <p class="black-text country-name"><span class="key-dot node_gray_black"></span>Caminho
+                                                    fora do escopo de melhor ou pior caminho</p>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </ul>
                             </div>
                         </li>
@@ -188,11 +248,16 @@
                             <h2>Por favor, aguarde enquanto geramos o caminho!</h2>
                         </div>
                     </div>
+
                     {% endif %}
                     <div class="col s12" id="container_visualization">
-                        {% block content %} {% endblock content %}
+
                     </div>
+
                 </div>
+                {% block content %} {% endblock content %}
+            </div>
+            </div>
             </div>
         </main>
 
