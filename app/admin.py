@@ -10,11 +10,12 @@ class StudentInformationsInline(admin.TabularInline):
     extra = 1 
 
 class StudentAdmin(admin.ModelAdmin): 
-    list_display = ("name","classe")
+    list_display = ("name","classe","ager","sex",)
 
 class NodesAdmin(admin.ModelAdmin): 
-    inlines = (StudentInformationsInline,) 
-    list_display = ("id","name","get_activities","node_parent","node_end",'end_node_conexction',"is_way")
+    inlines = (StudentInformationsInline,)
+    list_filter = ('course',)
+    list_display = ("id","name","get_activities","node_parent","evaluated","node_end",'end_node_conexction',"is_way","course")
 
 admin.site.register(Classes)
 admin.site.register(Student,StudentAdmin)

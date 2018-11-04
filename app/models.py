@@ -98,7 +98,7 @@ class StudentInformations(models.Model):
     notes = models.DecimalField(
         "Nota do Aluno", max_digits=4, decimal_places=2, blank=True, null=True)
     start_activity = models.DateField("Iniciou a atividade", auto_now=False, auto_now_add=False, blank=True, null=True)
-    end_activity = models.DateField("Iniciou a atividade", auto_now=False, auto_now_add=False, blank=True, null=True)
+    end_activity = models.DateField("Finalizou a atividade", auto_now=False, auto_now_add=False, blank=True, null=True)
     amount_access = models.IntegerField("quantidade de acesso",default=0)
     percentage_completed = models.IntegerField(
         "Porcentagem concluida", default=0)

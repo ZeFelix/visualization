@@ -26,14 +26,14 @@ var svg = d3.select("#container_visualization").append("svg")
     .attr("height", height + margin.top + margin.bottom)
     .call(d3.behavior.zoom().on("zoom", function () {
         svg.attr("transform", "translate(" + d3.event.translate + ")" + " scale(" + d3.event.scale + ")")
-      }))
+    }))
     .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 
 function init_get_json(params_filter) {
 
-    d3.json("/api/classe/" + get_classe_id()+"/node"+params_filter, function (data) {
+    d3.json("/api/classe/" + get_classe_id() + "/node" + params_filter, function (data) {
         data.forEach(function (params) {
             console.log(params);
         });
@@ -147,24 +147,28 @@ function update(source) {
         })
         .style("stroke", function (d, i) {
             var avg;
+            console.log("nome do nó")
+            console.log(d.target)
             if (d.target.node_evaluated == false) {
                 /**
                  * se o nó não for avaliado o link é a cor do link do pai
                  * ou seja, a média da turma permanece
                  */
-                avg = d.target.parent.node_avg;
+                if (d.target.is_filter != true) {
+                    // indica que o nó pertence a um filtro
+                    avg = -1;
+                } else {
+                    avg = d.target.parent.node_avg;
+                }
+            } else {
+                // if (d.target.node_end) {
+                //     /**
+                //      * Se for um nó fim, o link permanece com a cor do pai seu pai
+                //      */
+                //     return avg = d.target.parent.node_avg;
+                // }
+                avg = d.target.node_avg;
             }
-            if (d.target.node_avg == null) {
-                return "blue";
-            }
-            // if (d.target.node_end) {
-            //     /**
-            //      * Se for um nó fim, o link permanece com a cor do pai seu pai
-            //      */
-            //     return avg = d.target.parent.node_avg;
-            // }
-            avg = d.target.node_avg;
-
             var tag_color_blind = d3.select("#color_blind").property("checked");
 
             if (tag_color_blind) {
@@ -208,7 +212,7 @@ function click(d) {
                 console.log("anes")
                 console.log(d.node_id)
                 d.children.forEach(function (children) {
-                    expand(children,"start=true");
+                    expand(children, "start=true");
                 });
             }
         }
@@ -223,7 +227,7 @@ function click(d) {
  * 
  * expandir todos os nós 
  */
-function expand(d,click) {
+function expand(d, click) {
     if (d.classe_id || d.root) {
         if (d.children) {
             d._children = d.children;
@@ -233,7 +237,7 @@ function expand(d,click) {
                 d.children = d._children;
                 d._children = null;
                 d.children.forEach(function (children) {
-                    expand(children,"");
+                    expand(children, "");
                 });
             }
         }
@@ -242,16 +246,16 @@ function expand(d,click) {
         var params_filter = get_params_filter();
         var params_way = get_way();
         if (params_filter == "") {
-            params_filter = "?" + params_filter+click;
+            params_filter = "?" + params_filter + click;
         } else {
-            params_way = "&" + params_way+click;
+            params_way = "&" + params_way + click;
         }
         console.log("Buscar nó:")
         console.log(d.node_id)
         console.log("--")
         console.log("click")
         console.log(click)
-        d3.json("/api/classe/" + get_classe_id() +"/node/" + d.node_id + params_filter + params_way, function (data) {
+        d3.json("/api/classe/" + get_classe_id() + "/node/" + d.node_id + params_filter + params_way, function (data) {
             d.children = data;
             d._children = null;
             d.children.forEach(expand);

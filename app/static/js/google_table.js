@@ -6,7 +6,9 @@
 function create_table(node_id) {
     console.log("create table: node id");
     console.log(node_id);
-    d3.json('/api/gantt/node/'+node_id+"/student/1", function (err, data) {
+    var input_text = d3.select("#autocomplete-input").property("value");
+    var student_id = get_id_input_text(input_text);
+    d3.json('/api/gantt/node/'+node_id+"/student/"+student_id, function (err, data) {
         console.log("retorno das informações da atividade do nó")
         console.log(data)
         generator_table(data);
@@ -28,6 +30,7 @@ function generator_table(params) {
         data.addRows([
             [params.student.name, params.student_informations.notes, params.student_informations.amount_access,params.node.avg_access],
         ]);
+        console.log(data);
 
         var table = new google.visualization.Table(document.getElementById('table_div'));
 
