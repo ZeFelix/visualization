@@ -1,3 +1,4 @@
+from astroid.protocols import objects
 from dijkstar import Graph, find_path
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -84,6 +85,7 @@ class NodeDetail(APIView):
         número -1: indica a cor de um nó que n tem aluno que pertence ao filtro
         """
         node_formatation = None
+        student_all = Student.objects.filter(classe=classe_id)
         
         way = True if not request.query_params.get("way") == None else False
 
@@ -123,10 +125,11 @@ class NodeDetail(APIView):
                 "node_id": node.id,
                 "node_avg": node_avg,
                 "node_end": node.node_end,
-                "node_evaluated": False,
+                "node_evaluated": node.evaluated,
                 "name": node.activity.first().name,
                 "students": students_serializer.data,
                 "student_informations": student_informations_serializer.data,
+                "percentage_students" : round(students.count()/student_all.count()*100,2),
                 "is_filter" : True    
             }
         elif node.students.filter(Q(classe=classe_id)).count():
@@ -143,10 +146,11 @@ class NodeDetail(APIView):
                 "node_id": node.id,
                 "node_avg": -1,
                 "node_end": node.node_end,
-                "node_evaluated": False,
+                "node_evaluated": node.evaluated,
                 "name": node.activity.first().name,
                 "students": students_serializer.data,
                 "student_informations": student_informations_serializer.data,
+                "percentage_students" : round(students.count()/student_all.count()*100,2),
                 "is_filter" : False
             }
         return node_formatation
@@ -221,6 +225,7 @@ def gantt_detail(request, student_id=0):
     response = []
     student = Student.objects.get(pk=student_id)
     nodes = Node.objects.filter(students=student)
+    print(nodes)
     for node in nodes:
         student_informations = StudentInformations.objects.filter(student=student,node=node).first()
         information_format = [
@@ -283,7 +288,7 @@ def calc_way(request,classe_id):
         way = request.GET["way"]        
         signal = -1 if way == 'best_way' else 1   
 
-        classe = Classes.objects.first()
+        classe = Classes.objects.get(pk=classe_id)
         
         graph = Graph()
 
@@ -309,7 +314,6 @@ def calc_way(request,classe_id):
         u = node_start.id
         v = node_conextion.id
         node_ids = find_path(graph, u, v, cost_func=cost_func).nodes
-        #print(node_ids)
         
         for node in nodes:
             if node.id in node_ids:

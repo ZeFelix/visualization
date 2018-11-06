@@ -59,7 +59,7 @@ function update(source) {
     links = tree.links(nodes);
 
     // Normalize for fixed-depth.
-    nodes.forEach(function (d) { d.y = d.depth * 180; });
+    nodes.forEach(function (d) { d.y = d.depth * 250; });
 
     // Update the nodes…
     var node = svg.selectAll("g.node")
@@ -77,8 +77,8 @@ function update(source) {
 
 
     nodeEnter.append("text")
-        .attr("x", function (d) { return d.children || d._children ? -13 : -100; })
-        .attr("y", function (d) { return d.children || d._children ? -13 : -20; })
+        .attr("x", function (d) { return d.children || d._children ? -10 : -80; })
+        .attr("y", function (d) { return d.children || d._children ? -30 : -30; })
         .attr("text-anchor", function (d) { return d.children || d._children ? "end" : "start"; })
         .text(function (d) { return d.name; })
         .style("fill-opacity", 1e-6);
@@ -149,6 +149,7 @@ function update(source) {
             var avg;
             console.log("nome do nó")
             console.log(d.target)
+            console.log(d.target.node_evaluated)
             if (d.target.node_evaluated == false) {
                 /**
                  * se o nó não for avaliado o link é a cor do link do pai

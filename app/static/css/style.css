@@ -8,7 +8,7 @@
     stroke-width: 3px;
 }
 .node text {
-    font: 10px sans-serif;
+    font: 20px sans-serif;
 }
 .link {
     fill: none;

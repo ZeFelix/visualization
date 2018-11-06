@@ -89,6 +89,8 @@ class Node(models.Model):
     def get_activities(self):
         return "\n".join([p.name for p in self.activity.all()])
 
+    class Meta:
+        ordering = ['id']
 
 class StudentInformations(models.Model):
     node = models.ForeignKey(

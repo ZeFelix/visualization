@@ -113,11 +113,19 @@ function tabulate(data, columns) {
  * Função para gerar tooltip com tabela de informações
  */
 function tooltip_tablle(data) {
+    var media = 0.0;
+    var total = 0;
+    var cont = 0;
     var obj = {};
     obj.header = data.name;
     obj.rows = [];
     obj.rows.push({
-        "label": "Name",
+        "label": "Porcentagem de Alunos",
+        "value": data.percentage_students.toString()+"%"
+    });
+    obj.rows.push({});
+    obj.rows.push({
+        "label": "Nomes",
         "value": "Notas"
     });
     data.students.forEach(function (student) {
@@ -127,9 +135,16 @@ function tooltip_tablle(data) {
                     "label": student.name,
                     "value": element.notes
                 });
+                total += parseInt(element.notes);
+                cont += 1;
             }
         });
     });
+    media = (total/cont).toFixed(2);
+    obj.rows[1] = {
+        "label": "Média",
+        "value": media
+    };
     var svg = d3.select("svg")[0][0];
     tooltip.table()
         .width(180)
