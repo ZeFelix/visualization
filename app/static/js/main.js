@@ -159,7 +159,15 @@ function update(source) {
                     // indica que o nó pertence a um filtro
                     avg = -1;
                 } else {
-                    avg = d.target.parent.node_avg;
+                    console.log("deu zebra ************")
+                    if(get_way() == ""){
+                        console.log("deu zebra1 ************")
+                        avg = d.target.parent.node_avg;
+                    }else{
+                        console.log("deu zebra2 ************")
+                        avg = d.target.node_avg;
+                        console.log(avg)
+                    }
                 }
             } else {
                 // if (d.target.node_end) {
