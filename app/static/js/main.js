@@ -221,7 +221,7 @@ function click(d) {
                 console.log("anes")
                 console.log(d.node_id)
                 d.children.forEach(function (children) {
-                    expand(children, "start=true");
+                    expand(children);
                 });
             }
         }
@@ -236,7 +236,7 @@ function click(d) {
  * 
  * expandir todos os nós 
  */
-function expand(d, click) {
+function expand(d) {
     if (d.classe_id || d.root) {
         if (d.children) {
             d._children = d.children;
@@ -246,7 +246,7 @@ function expand(d, click) {
                 d.children = d._children;
                 d._children = null;
                 d.children.forEach(function (children) {
-                    expand(children, "");
+                    expand(children);
                 });
             }
         }
@@ -255,9 +255,9 @@ function expand(d, click) {
         var params_filter = get_params_filter();
         var params_way = get_way();
         if (params_filter == "") {
-            params_filter = "?" + params_filter + click;
+            params_filter = "?" + params_filter;
         } else {
-            params_way = "&" + params_way + click;
+            params_way = "&" + params_way;
         }
         console.log("Buscar nó:")
         console.log(d.node_id)
