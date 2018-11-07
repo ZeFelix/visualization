@@ -38,6 +38,7 @@ class AllList(APIView):
             "children": self.get_node_start(classe, request)
         })
         # serializer = ClassesSerialzer(classes,many=True)
+        print(informations)
         return Response(informations)
 
     def get_node_start(self, classe, request):
@@ -58,11 +59,15 @@ class NodeDetail(APIView):
     def get(self, request, node_id,classe_id):
         node_parent = Node.objects.get(pk=node_id)
         nodes = Node.objects.filter(node_parent=node_parent)
+        print("no pai")
+        print(node_parent)
+        
         data = []
         for node in nodes:
             if node:
                 data.append(self.format_node_information(node, request, classe_id))
-        
+        print("nos filhos")
+        print(data)
         return Response(data)
                 
 

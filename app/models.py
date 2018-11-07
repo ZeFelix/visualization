@@ -84,7 +84,7 @@ class Node(models.Model):
     avg_access = models.IntegerField("Média de Acesso", default=0)
 
     def __str__(self):
-        return str(self.name) + "-"+str(self.get_activities())
+        return str(self.id)+"-"+ str(self.name) + "-"+str(self.get_activities())
 
     def get_activities(self):
         return "\n".join([p.name for p in self.activity.all()])
