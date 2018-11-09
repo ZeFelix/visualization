@@ -35,7 +35,7 @@ function init_get_json(params_filter) {
 
     d3.json("/api/classe/" + get_classe_id() + "/node" + params_filter, function (data) {
         data.forEach(function (params) {
-            console.log(params);
+            //console.log(params);
         });
         root = {
             "name": "Inicio",
@@ -92,9 +92,9 @@ function update(source) {
     nodeUpdate.select("circle")
         .attr("r", 20)
         .style("fill", function (d) {
-            console.log("nó")
-            console.log(d.node_name)
-            console.log(d.node_end)
+            //console.log("nó")
+            //console.log(d.node_name)
+            //console.log(d.node_end)
             if (d.node_end == true) {
                 return "black";
             }
@@ -147,9 +147,9 @@ function update(source) {
         })
         .style("stroke", function (d, i) {
             var avg;
-            console.log("nome do nó")
+            //console.log("nome do nó")
             console.log(d.target)
-            console.log(d.target.node_evaluated)
+            //console.log(d.target.node_evaluated)
             if (d.target.node_evaluated == false) {
                 /**
                  * se o nó não for avaliado o link é a cor do link do pai
@@ -159,14 +159,14 @@ function update(source) {
                     // indica que o nó pertence a um filtro
                     avg = -1;
                 } else {
-                    console.log("deu zebra ************")
+                    //console.log("deu zebra ************")
                     if(get_way() == ""){
-                        console.log("deu zebra1 ************")
+                        //console.log("deu zebra1 ************")
                         avg = d.target.parent.node_avg;
                     }else{
-                        console.log("deu zebra2 ************")
+                        //console.log("deu zebra2 ************")
                         avg = d.target.node_avg;
-                        console.log(avg)
+                        //console.log(avg)
                     }
                 }
             } else {
@@ -176,6 +176,8 @@ function update(source) {
                 //      */
                 //     return avg = d.target.parent.node_avg;
                 // }
+                //console.log("nó avaliado node_id"+d.target.node_id)
+                //console.log(d.target.node_avg)
                 avg = d.target.node_avg;
             }
             var tag_color_blind = d3.select("#color_blind").property("checked");
@@ -211,15 +213,15 @@ function update(source) {
 function click(d) {
     if (d.classe_id || d.root) {
         if (d.children) {
-            console.log("->1")
+            //console.log("->1")
             d._children = d.children;
             d.children = null;
         } else {
             if (d._children != null) {
                 d.children = d._children;
                 d._children = null;
-                console.log("anes")
-                console.log(d.node_id)
+                //console.log("anes")
+                //console.log(d.node_id)
                 d.children.forEach(function (children) {
                     expand(children);
                 });
@@ -259,11 +261,11 @@ function expand(d) {
         } else {
             params_way = "&" + params_way;
         }
-        console.log("Buscar nó:")
-        console.log(d.node_id)
-        console.log("--")
-        console.log("click")
-        console.log(click)
+        //console.log("Buscar nó:")
+        //console.log(d.node_id)
+        //console.log("--")
+        //console.log("click")
+        //console.log(click)
         d3.json("/api/classe/" + get_classe_id() + "/node/" + d.node_id + params_filter + params_way, function (data) {
             d.children = data;
             d._children = null;
