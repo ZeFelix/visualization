@@ -164,9 +164,9 @@ function update(source) {
                         //console.log("deu zebra1 ************")
                         avg = d.target.parent.node_avg;
                     }else{
-                        //console.log("deu zebra2 ************")
+                        console.log("deu zebra2 ************")
                         avg = d.target.node_avg;
-                        //console.log(avg)
+                        console.log(avg)
                     }
                 }
             } else {
